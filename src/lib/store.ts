@@ -66,7 +66,6 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     if (!startTime) return;
 
     let errors = 0;
-    const minLen = Math.min(content.length, userInput.length);
     
     for (let i = 0; i < userInput.length; i++) {
       if (userInput[i] !== content[i]) {

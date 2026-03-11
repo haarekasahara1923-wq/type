@@ -11,7 +11,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 import { GraduationCap } from "lucide-react";
 
 export default function Home() {
-  const { isFinished, setContent, language } = useTypingStore();
+  const { isFinished, setContent } = useTypingStore();
 
   useEffect(() => {
     // Initial content
@@ -28,8 +28,10 @@ export default function Home() {
               <GraduationCap size={24} />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">E-Max <span className="text-brand-primary">Typing Lab</span></h1>
-              <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Computer Education Center</p>
+              <h1 className="text-xl font-bold tracking-tight">
+                {process.env.NEXT_PUBLIC_BRAND_NAME?.split(' ')[0] || "E-Max"} <span className="text-brand-primary">{process.env.NEXT_PUBLIC_BRAND_NAME?.split(' ').slice(1).join(' ') || "Typing Lab"}</span>
+              </h1>
+              <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Typing Lab & Certification</p>
             </div>
           </div>
 
@@ -79,7 +81,7 @@ export default function Home() {
       {/* Footer Branding */}
       <footer className="py-10 text-center border-t border-zinc-200 dark:border-zinc-800">
         <p className="text-zinc-500 text-sm">
-          &copy; 2024 E-Max Computer Education Center. All rights reserved. 
+          &copy; {new Date().getFullYear()} {process.env.NEXT_PUBLIC_BRAND_NAME}. All rights reserved. 
           <span className="mx-2">|</span>
           White-label Typing SaaS Platform
         </p>

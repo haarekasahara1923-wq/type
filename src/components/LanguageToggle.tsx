@@ -1,7 +1,6 @@
 "use client";
 
 import { useTypingStore } from "@/lib/store";
-import { Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function LanguageToggle() {

@@ -7,8 +7,7 @@ import {
   Settings, 
   LayoutDashboard, 
   PlusCircle, 
-  Download,
-  Search
+  Download
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

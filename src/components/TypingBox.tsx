@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useTypingStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -8,15 +8,15 @@ export default function TypingBox() {
   const { content, userInput, setUserInput, language, isFinished } = useTypingStore();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const focusInput = () => {
+  const focusInput = useCallback(() => {
     if (inputRef.current && !isFinished) {
       inputRef.current.focus();
     }
-  };
+  }, [isFinished]);
 
   useEffect(() => {
     focusInput();
-  }, [isFinished]);
+  }, [focusInput]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isFinished) return;
