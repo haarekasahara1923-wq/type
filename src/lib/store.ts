@@ -8,7 +8,8 @@ interface TypingState {
   isFinished: boolean;
   content: string;
   userInput: string;
-  wpm: number;
+  wpm: number; // Net WPM
+  grossWpm: number;
   accuracy: number;
   errors: number;
   cpm: number;
@@ -32,6 +33,7 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   content: '',
   userInput: '',
   wpm: 0,
+  grossWpm: 0,
   accuracy: 0,
   errors: 0,
   cpm: 0,
@@ -45,6 +47,7 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     timeLeft: 30 * 60,
     startTime: null,
     wpm: 0,
+    grossWpm: 0,
     accuracy: 0,
     errors: 0,
     cpm: 0
@@ -52,8 +55,9 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   
   setUserInput: (userInput) => {
     const state = get();
-    
-    // Don't allow typing more than content length
+    if (state.isFinished) return;
+
+    // Limit input to content length
     if (userInput.length > state.content.length) return;
     
     if (!state.isStarted && userInput.length > 0) {
@@ -63,7 +67,6 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     set({ userInput });
     get().updateMetrics();
 
-    // Finish test if content is fully typed
     if (userInput.length === state.content.length && state.content.length > 0) {
       get().finishTest();
     }
@@ -87,27 +90,35 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     const { content, userInput, startTime } = get();
     if (!startTime) return;
 
-    let errors = 0;
-    const typedTill = userInput.length;
+    let totalErrors = 0;
+    const typedLength = userInput.length;
     
-    for (let i = 0; i < typedTill; i++) {
+    // Calculate errors
+    for (let i = 0; i < typedLength; i++) {
       if (userInput[i] !== content[i]) {
-        errors++;
+        totalErrors++;
       }
     }
 
-    const timeElapsedInMinutes = (Date.now() - startTime) / 60000;
-    const charCount = typedTill;
-    const wordsTyped = charCount / 5;
-    
-    // Standard WPM formula: (chars / 5) / time - (errors / time)
-    const rawWpm = timeElapsedInMinutes > 0 ? (wordsTyped / timeElapsedInMinutes) : 0;
-    const netWpm = Math.max(0, Math.round(rawWpm - (errors / timeElapsedInMinutes)));
-    
-    const cpm = timeElapsedInMinutes > 0 ? Math.round(charCount / timeElapsedInMinutes) : 0;
-    const accuracy = charCount > 0 ? Math.round(((charCount - errors) / charCount) * 100) : 100;
+    const timeElapsedInSeconds = (Date.now() - startTime) / 1000;
+    if (timeElapsedInSeconds < 1) return; // Don't calculate metrics in the first second to avoid spikes
 
-    set({ wpm: netWpm, accuracy, errors, cpm });
+    const timeElapsedInMinutes = timeElapsedInSeconds / 60;
+
+    // Gross WPM = (total characters typed / 5) / time
+    const grossWpm = Math.round((typedLength / 5) / timeElapsedInMinutes);
+    
+    // Net WPM = Gross WPM - (uncorrected errors / time)
+    // Since we don't allow backspacing past current char in some modes, we use standard error penalty
+    const netWpm = Math.max(0, Math.round(grossWpm - (totalErrors / timeElapsedInMinutes)));
+    
+    const accuracy = typedLength > 0 
+      ? Math.round(((typedLength - totalErrors) / typedLength) * 100) 
+      : 100;
+      
+    const cpm = Math.round(typedLength / timeElapsedInMinutes);
+
+    set({ wpm: netWpm, grossWpm, accuracy, errors: totalErrors, cpm });
   },
 
   reset: () => set({
@@ -117,9 +128,11 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     timeLeft: 30 * 60,
     startTime: null,
     wpm: 0,
+    grossWpm: 0,
     accuracy: 0,
     errors: 0,
     cpm: 0
   })
 }));
+
 
