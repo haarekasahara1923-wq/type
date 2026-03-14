@@ -32,15 +32,33 @@ export async function GET(req: Request) {
   const language = searchParams.get("language") || "English";
   
   try {
-    const paragraphs = await prisma.typingParagraph.findMany({
+    let paragraphs = await prisma.typingParagraph.findMany({
       where: { language },
       take: 20,
       orderBy: { createdAt: "desc" },
     });
 
+    // If no paragraphs, try to generate one on the fly
+    if (paragraphs.length === 0) {
+      console.log(`No paragraphs found for ${language}, generating one...`);
+      const content = await generateParagraph(language, "Intermediate");
+      if (content) {
+        const newParagraph = await prisma.typingParagraph.create({
+          data: {
+            language,
+            difficulty: "Intermediate",
+            content,
+          },
+        });
+        paragraphs = [newParagraph];
+      }
+    }
+
     return NextResponse.json(paragraphs);
-  } catch {
+  } catch (error) {
+    console.error("GET paragraphs error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
 

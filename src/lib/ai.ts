@@ -10,11 +10,13 @@ const groq = new Groq({
 });
 
 export async function generateParagraph(language: string, difficulty: string) {
-  const prompt = `Generate a typing practice paragraph in ${language} for a typing exam. 
+  const prompt = `Generate a long typing practice paragraph in ${language} for a professional typing examination. 
   Difficulty: ${difficulty}. 
-  Length: 80-150 words. 
-  Topic: General computer education or professional office work.
-  The output should be ONLY the paragraph text.`;
+  Length: 200-300 words. 
+  Topic: Professional workplace scenarios, computer technology, or academic literature.
+  The content must be continuous and flowing, avoiding lists or bullet points. 
+  Output ONLY the paragraph text without any headers or quotes.`;
+
 
   try {
     // Try Groq first (faster)

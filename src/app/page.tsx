@@ -22,16 +22,16 @@ export default function Home() {
         const data = await res.json();
         
         if (data && data.length > 0) {
-          // Pick a random paragraph
           const randomIndex = Math.floor(Math.random() * data.length);
           setContent(data[randomIndex].content);
         } else {
           // Fallback if no data in DB
           const fallback = language === 'English' 
-            ? "The quick brown fox jumps over the lazy dog. Accuracy is more important than speed."
-            : "नमस्ते भारत। यह हिंदी टाइपिंग अभ्यास है। अपनी गति बढ़ाएं।";
+            ? "In the rapidly evolving world of digital information technology, the ability to process and communicate data quickly and accurately has become a cornerstone of professional success. Computer literacy is no longer just an additional skill but a fundamental requirement in almost every sector of the global economy. From complex data analysis to simple administrative tasks, technology integrates into our daily workflows, demanding a high level of proficiency and adaptability. Developing a strong typing speed with high accuracy allows professionals to translate their thoughts into digital form seamlessly, thereby increasing productivity and reducing cognitive strain. As we move further into the age of artificial intelligence and automated systems, the human element remains vital in guiding these tools and ensuring that the output aligns with organizational goals and ethical standards."
+            : "डिजिटल सूचना प्रौद्योगिकी की तेजी से बदलती दुनिया में, डेटा को जल्दी और सही तरीके से संसाधित और संप्रेषित करने की क्षमता पेशेवर सफलता का एक आधार बन गई है। कंप्यूटर साक्षरता अब केवल एक अतिरिक्त कौशल नहीं है, बल्कि वैश्विक अर्थव्यवस्था के लगभग हर क्षेत्र में एक मौलिक आवश्यकता है। जटिल डेटा विश्लेषण से लेकर सरल प्रशासनिक कार्यों तक, प्रौद्योगिकी हमारे दैनिक वर्कफ़्लो में एकीकृत होती है, जिसमें उच्च स्तर की दक्षता और अनुकूलन क्षमता की आवश्यकता होती है। उच्च सटीकता के साथ एक मजबूत टाइपिंग गति विकसित करने से पेशेवरों को अपने विचारों को डिजिटल रूप में निर्बाध रूप से अनुवाद करने की अनुमति मिलती है जिससे उत्पादकता बढ़ती है और मानसिक तनाव कम होता है। जैसे-जैसे हम कृत्रिम बुद्धिमत्ता और स्वचालित प्रणालियों के युग में आगे बढ़ते हैं, इन उपकरणों का मार्गदर्शन करने और यह सुनिश्चित करने में मानवीय तत्व महत्वपूर्ण बना रहता है कि आउटपुट संगठनात्मक लक्ष्यों और नैतिक मानकों के साथ संरेखित हो।";
           setContent(fallback);
         }
+
       } catch (error) {
         console.error("Failed to fetch content", error);
       } finally {

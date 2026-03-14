@@ -79,13 +79,14 @@
 
   /* Font Families */
   .font-hindi {
-    font-family: 'Mangal', 'Noto Sans Devanagari', sans-serif;
+    font-family: var(--font-hindi), 'Mangal', sans-serif;
   }
   
   .font-english {
-    font-family: 'Calibri', 'Inter', system-ui, sans-serif;
+    font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
   }
 }
+
 
 /* Typing specific classes */
 .char-correct {
