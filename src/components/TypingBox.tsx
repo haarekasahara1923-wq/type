@@ -29,6 +29,7 @@ export default function TypingBox() {
   // Split content into grapheme clusters for rendering (prevents Hindi matras from detaching)
   const renderDisplayContent = () => {
     // Falls back to simple split if Intl.Segmenter is not available
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const segmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter 
       ? new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' }) 
       : null;
@@ -40,6 +41,8 @@ export default function TypingBox() {
     const userChars = segmenter 
       ? Array.from(segmenter.segment(userInput)).map((s: any) => s.segment)
       : userInput.split("");
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+
 
     return chars.map((char, index) => {
       let status = "neutral";
