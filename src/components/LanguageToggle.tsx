@@ -4,7 +4,7 @@ import { useTypingStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export default function LanguageToggle() {
-  const { language, setLanguage, setContent } = useTypingStore();
+  const { language, setLanguage } = useTypingStore();
 
   const handleToggle = (lang: 'English' | 'Hindi') => {
     setLanguage(lang);

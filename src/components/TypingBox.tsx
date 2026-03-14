@@ -5,7 +5,7 @@ import { useTypingStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export default function TypingBox() {
-  const { content, userInput, setUserInput, language, isFinished, isStarted } = useTypingStore();
+  const { content, userInput, setUserInput, language, isFinished } = useTypingStore();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(false);

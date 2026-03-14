@@ -11,7 +11,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 import { GraduationCap, Loader2 } from "lucide-react";
 
 export default function Home() {
-  const { isFinished, setContent, language, reset } = useTypingStore();
+  const { isFinished, setContent, language } = useTypingStore();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
