@@ -26,10 +26,20 @@ export default function TypingBox() {
     setUserInput(e.target.value);
   };
 
-  // Split content into characters for rendering in the text display area
+  // Split content into grapheme clusters for rendering (prevents Hindi matras from detaching)
   const renderDisplayContent = () => {
-    const chars = content.split("");
-    const userChars = userInput.split("");
+    // Falls back to simple split if Intl.Segmenter is not available
+    const segmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter 
+      ? new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' }) 
+      : null;
+    
+    const chars = segmenter 
+      ? Array.from(segmenter.segment(content)).map((s: any) => s.segment)
+      : content.split("");
+      
+    const userChars = segmenter 
+      ? Array.from(segmenter.segment(userInput)).map((s: any) => s.segment)
+      : userInput.split("");
 
     return chars.map((char, index) => {
       let status = "neutral";
@@ -44,12 +54,12 @@ export default function TypingBox() {
           key={index}
           id={index === userChars.length ? "current-char" : undefined}
           className={cn(
-            "inline-block relative transition-all duration-150",
-            status === "typed" && "text-zinc-400 dark:text-zinc-600", // Dull grey for typed text
+            "inline-block relative transition-all duration-75",
+            status === "typed" && "text-zinc-400 dark:text-zinc-600",
             status === "error" && "text-red-500 bg-red-100 dark:bg-red-900/30 font-bold",
             status === "current" && "text-brand-primary font-bold border-b-2 border-brand-primary",
             status === "neutral" && "text-zinc-800 dark:text-zinc-200",
-            language === "Hindi" ? "font-hindi text-3xl mx-0.5" : "font-english text-2xl"
+            language === "Hindi" ? "font-mangal text-4xl mx-0.5 leading-[1.6]" : "font-english text-2xl"
           )}
         >
           {char === " " ? "\u00A0" : char}
@@ -57,6 +67,7 @@ export default function TypingBox() {
       );
     });
   };
+
 
   // Sync scroll of display area to the current character
   useEffect(() => {

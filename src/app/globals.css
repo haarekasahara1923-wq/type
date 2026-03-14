@@ -78,6 +78,11 @@
   }
 
   /* Font Families */
+  .font-mangal {
+    font-family: 'Mangal', 'Noto Sans Devanagari', sans-serif;
+    line-height: 1.8;
+  }
+  
   .font-hindi {
     font-family: var(--font-hindi), 'Mangal', sans-serif;
   }
@@ -86,6 +91,7 @@
     font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
   }
 }
+
 
 
 /* Typing specific classes */
