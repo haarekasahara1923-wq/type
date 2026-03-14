@@ -5,6 +5,18 @@ import { useTypingStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Keyboard, Type } from "lucide-react";
 
+// Remington Gail / Standard Hindi Mapping based on the provided Keyboard Layout
+const HINDI_KEY_MAP: Record<string, string> = {
+  'q': 'ौ', 'w': 'ै', 'e': 'ा', 'r': 'ी', 't': 'ू', 'y': 'ब', 'u': 'ह', 'i': 'ग', 'o': 'द', 'p': 'ज',
+  'a': 'ो', 's': 'े', 'd': 'अ', 'f': 'ि', 'g': 'ु', 'h': 'प', 'j': 'र', 'k': 'क', 'l': 'त', ';': 'च',
+  'z': 'ण', 'x': 'ं', 'c': 'म', 'v': 'न', 'b': 'व', 'n': 'ल', 'm': 'स', ',': 'य', '.': 'श', '/': 'ष',
+  ' ': ' ',
+  // Standard Gail caps mapping (approximate for the requested keys)
+  'Q': 'ौ', 'W': 'ै', 'E': 'ा', 'R': 'ी', 'T': 'ू', 'Y': 'ब', 'U': 'ह', 'I': 'ग', 'O': 'द', 'P': 'ज',
+  'A': 'ो', 'S': 'े', 'D': 'अ', 'F': 'ि', 'G': 'ु', 'H': 'प', 'J': 'र', 'K': 'क', 'L': 'त', ':': 'च',
+  'Z': 'ण', 'X': 'ं', 'C': 'म', 'V': 'न', 'B': 'व', 'N': 'ल', 'M': 'स', '<': 'य', '>': 'श', '?': 'ष'
+};
+
 export default function TypingBox() {
   const { content, userInput, setUserInput, language, isFinished } = useTypingStore();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -23,54 +35,81 @@ export default function TypingBox() {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isFinished) return;
-    setUserInput(e.target.value);
+    // For English or non-mapped keys, handle normally. 
+    // In Hindi, we handle most character mapping via onKeyDown.
+    if (language === 'English') {
+      setUserInput(e.target.value);
+    }
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isFinished) return;
+
+    if (language === "Hindi") {
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        setUserInput(userInput.slice(0, -1));
+        return;
+      }
+
+      if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+        e.preventDefault();
+        const mappedChar = HINDI_KEY_MAP[e.key] || e.key;
+        setUserInput(userInput + mappedChar);
+      }
+    }
+  };
+
 
   // Split content into grapheme clusters for rendering (prevents Hindi matras from detaching)
   const renderDisplayContent = () => {
-    // Falls back to simple split if Intl.Segmenter is not available
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const segmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter 
       ? new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' }) 
       : null;
     
-    const chars = segmenter 
+    // Convert to arrays for easy comparison
+    const contentSegments = segmenter 
       ? Array.from(segmenter.segment(content)).map((s: any) => s.segment)
       : content.split("");
       
-    const userChars = segmenter 
-      ? Array.from(segmenter.segment(userInput)).map((s: any) => s.segment)
-      : userInput.split("");
-    /* eslint-enable @typescript-eslint/no-explicit-any */
+    // For the typed text, we need to know WHICH segment we are in.
+    // However, it's safer to compare string prefixes for "typed" status.
+    
+    let currentByteIndex = 0;
 
-
-    return chars.map((char, index) => {
+    return contentSegments.map((segment, index) => {
+      const segmentLength = segment.length;
+      const segmentInUser = userInput.substring(currentByteIndex, currentByteIndex + segmentLength);
+      
       let status = "neutral";
-      if (index < userChars.length) {
-        status = userChars[index] === char ? "typed" : "error";
-      } else if (index === userChars.length) {
+      if (currentByteIndex < userInput.length) {
+        status = segmentInUser === segment ? "typed" : "error";
+      } else if (currentByteIndex === userInput.length) {
         status = "current";
       }
+      
+      currentByteIndex += segmentLength;
 
       return (
         <span
           key={index}
-          id={index === userChars.length ? "current-char" : undefined}
+          id={status === "current" ? "current-char" : undefined}
           className={cn(
             "inline-block relative transition-all duration-75",
             status === "typed" && "text-zinc-400 dark:text-zinc-600",
-            status === "error" && "text-red-500 bg-red-100 dark:bg-red-900/30 font-bold",
+            status === "error" && "text-red-500 bg-red-100 dark:bg-red-900/40 font-bold",
             status === "current" && "text-brand-primary font-bold border-b-2 border-brand-primary",
             status === "neutral" && "text-zinc-800 dark:text-zinc-200",
             language === "Hindi" ? "font-mangal text-4xl mx-0.5 leading-[1.6]" : "font-english text-2xl"
           )}
         >
-          {char === " " ? "\u00A0" : char}
+          {segment === " " ? "\u00A0" : segment}
         </span>
       );
     });
+    /* eslint-enable @typescript-eslint/no-explicit-any */
   };
-
 
   // Sync scroll of display area to the current character
   useEffect(() => {
@@ -78,10 +117,10 @@ export default function TypingBox() {
     if (currentChar && displayRef.current) {
       const parent = displayRef.current;
       const offset = currentChar.offsetTop;
-      if (offset > parent.scrollTop + 150) {
-        parent.scrollTo({ top: offset - 80, behavior: "smooth" });
+      if (offset > parent.scrollTop + 140) {
+        parent.scrollTo({ top: offset - 100, behavior: "smooth" });
       } else if (offset < parent.scrollTop) {
-        parent.scrollTo({ top: offset - 80, behavior: "smooth" });
+        parent.scrollTo({ top: offset - 100, behavior: "smooth" });
       }
     }
   }, [userInput]);
@@ -97,11 +136,11 @@ export default function TypingBox() {
               <Type size={14} className="text-brand-primary" />
               Examination Text Panel
             </div>
-            {language === "Hindi" && <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded-full font-bold">Mangal Font</span>}
+            {language === "Hindi" && <span className="text-[10px] bg-brand-primary/10 text-brand-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Mangal Script Exam</span>}
           </div>
           <div 
             ref={displayRef}
-            className="h-56 overflow-y-auto p-10 leading-[1.8] select-none text-justify scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
+            className="h-64 overflow-y-auto p-12 select-none text-justify scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
           >
             {renderDisplayContent()}
           </div>
@@ -117,7 +156,7 @@ export default function TypingBox() {
           <div className="bg-zinc-50 dark:bg-zinc-800/50 px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
              <div className="flex items-center gap-2 text-zinc-500 font-bold text-[10px] uppercase tracking-[0.2em]">
               <Keyboard size={14} className="text-brand-primary" />
-              Student Typing Area
+              Student Typing Area (Remington Gail)
             </div>
             <div className="flex gap-1">
                <div className="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700" />
@@ -130,12 +169,13 @@ export default function TypingBox() {
             ref={inputRef}
             value={userInput}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Click here and start typing the above text..."
+            placeholder={language === 'Hindi' ? "यहाँ टाइप करना शुरू करें..." : "Start typing here..."}
             className={cn(
-              "w-full h-40 p-10 bg-transparent resize-none outline-none leading-relaxed transition-all",
-              language === "Hindi" ? "font-hindi text-2xl" : "font-english text-xl text-zinc-800 dark:text-zinc-100"
+              "w-full h-44 p-12 bg-transparent resize-none outline-none leading-relaxed transition-all",
+              language === "Hindi" ? "font-mangal text-4xl" : "font-english text-xl text-zinc-800 dark:text-zinc-100"
             )}
             spellCheck={false}
             disabled={isFinished}
@@ -150,7 +190,7 @@ export default function TypingBox() {
                 <div className="p-2 bg-brand-primary rounded-lg text-white">
                    <Keyboard size={18} />
                 </div>
-                <span className="text-brand-primary font-black uppercase tracking-widest text-xs">Click inside to activate typing</span>
+                <span className="text-brand-primary font-black uppercase tracking-widest text-[10px]">Click to activate Hindi Typing</span>
               </div>
             </div>
           )}
@@ -174,5 +214,6 @@ export default function TypingBox() {
     </div>
   );
 }
+
 
 
