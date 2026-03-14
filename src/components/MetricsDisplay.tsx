@@ -4,7 +4,7 @@ import { useTypingStore } from "@/lib/store";
 import { Gauge, Target, AlertCircle, Zap, TrendingUp } from "lucide-react";
 
 export default function MetricsDisplay() {
-  const { wpm, grossWpm, accuracy, errors, cpm } = useTypingStore();
+  const { wpm, accuracy, errors, cpm } = useTypingStore();
 
   const metrics = [
     { 
