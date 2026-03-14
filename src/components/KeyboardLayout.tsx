@@ -18,11 +18,14 @@ const HINDI_LAYOUT = [
 ];
 
 export default function KeyboardLayout() {
-  const { language, userInput } = useTypingStore();
+  const { language, userInput, content, isFinished } = useTypingStore();
   const [isVisible, setIsVisible] = useState(true);
 
   const currentLayout = language === "English" ? ENGLISH_LAYOUT : HINDI_LAYOUT;
-  const lastChar = userInput.slice(-1).toUpperCase();
+  
+  // Highlighting: show what needs to be typed NEXT
+  const nextChar = content[userInput.length]?.toUpperCase() || "";
+  const lastTypedChar = userInput.slice(-1).toUpperCase();
 
   return (
     <div className={cn(
@@ -41,7 +44,7 @@ export default function KeyboardLayout() {
           <div className="flex items-center gap-2 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">
             <Keyboard className="text-brand-primary" size={20} />
             <h3 className="font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wider text-sm">
-              {language} Keyboard Layout
+              {language} Keyboard Assistant
             </h3>
           </div>
 
@@ -49,15 +52,19 @@ export default function KeyboardLayout() {
             {currentLayout.map((row, rowIndex) => (
               <div key={rowIndex} className="flex gap-2 justify-center">
                 {row.map((key) => {
-                  const isActive = lastChar === key || (language === "Hindi" && userInput.slice(-1) === key);
+                  const isNext = nextChar === key;
+                  const isJustTyped = lastTypedChar === key;
+                  
                   return (
                     <div
                       key={key}
                       className={cn(
                         "w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-semibold transition-all duration-100 select-none",
-                        isActive 
-                          ? "bg-brand-primary text-white border-brand-primary scale-110 shadow-lg z-10" 
-                          : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"
+                        isNext 
+                          ? "bg-brand-primary text-white border-brand-primary scale-110 shadow-lg z-10 animate-bounce" 
+                          : isJustTyped && !isFinished
+                            ? "bg-brand-primary/20 border-brand-primary text-brand-primary"
+                            : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"
                       )}
                     >
                       {key}
@@ -68,8 +75,23 @@ export default function KeyboardLayout() {
             ))}
             
             <div className="mt-4 flex flex-col gap-2">
-               <div className="h-10 w-full bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-400 text-xs italic">
+               <div className={cn(
+                 "h-10 w-full rounded-lg border flex items-center justify-center text-xs italic font-bold uppercase tracking-widest transition-all",
+                 content[userInput.length] === " " 
+                  ? "bg-brand-primary text-white border-brand-primary animate-pulse" 
+                  : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400"
+               )}>
                  Space Bar
+               </div>
+            </div>
+          </div>
+          
+          <div className="mt-6 flex items-center justify-between text-[10px] text-zinc-400 font-bold uppercase tracking-tighter">
+            <span>Visual Guide</span>
+            <div className="flex gap-2">
+               <div className="flex items-center gap-1">
+                 <div className="w-2 h-2 bg-brand-primary rounded-full" />
+                 <span>Next Key</span>
                </div>
             </div>
           </div>
@@ -78,3 +100,4 @@ export default function KeyboardLayout() {
     </div>
   );
 }
+
