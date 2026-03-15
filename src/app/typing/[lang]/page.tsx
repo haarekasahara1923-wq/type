@@ -68,20 +68,30 @@ export default function DynamicTypingPage() {
   const handleAiGenerate = async () => {
     setIsAiLoading(true);
     try {
-      // First try to get from database
-      const response = await fetch("/api/paragraphs?language=" + (lang === "hindi" ? "Hindi" : "English"));
-      const data = await response.json();
+      // Step 1: Try to get existing or trigger silent generation
+      let response = await fetch("/api/paragraphs?language=" + (lang === "hindi" ? "Hindi" : "English"));
+      let data = await response.json();
       
       if (Array.isArray(data) && data.length > 0) {
         setPracticeText(data[Math.floor(Math.random() * data.length)].content);
       } else {
-        // If DB is empty or fails, fallback to direct generation via a new POST endpoint or just alert
-        alert("Preparing AI Content... Please click again in 5 seconds if text doesn't appear.");
-         // The GET endpoint has a fallback internally to generate, so it might just need a retry or it's slow.
+        // Step 2: If empty, it means generation might be in progress or failed. Try one more time after a short delay.
+        setIsAiLoading(true);
+        const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
+        await timer(2000); // Wait 2s
+        
+        response = await fetch("/api/paragraphs?language=" + (lang === "hindi" ? "Hindi" : "English"));
+        data = await response.json();
+        
+        if (Array.isArray(data) && data.length > 0) {
+          setPracticeText(data[Math.floor(Math.random() * data.length)].content);
+        } else {
+          alert("AI is preparing fresh content. Please try clicking again in a few seconds.");
+        }
       }
     } catch (e) {
       console.error("AI Generation Error:", e);
-      alert("AI Service is currently busy. Please try again later.");
+      alert("Note: AI generation might take up to 10 seconds. Please try again.");
     } finally {
       setIsAiLoading(false);
     }

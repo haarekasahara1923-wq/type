@@ -65,17 +65,28 @@ export default function HindiTypingPage() {
   const handleAiGenerate = async () => {
     setIsAiLoading(true);
     try {
-      const response = await fetch("/api/paragraphs?language=Hindi");
-      const data = await response.json();
+      let response = await fetch("/api/paragraphs?language=Hindi");
+      let data = await response.json();
       
       if (Array.isArray(data) && data.length > 0) {
         setPracticeText(data[Math.floor(Math.random() * data.length)].content);
       } else {
-        alert("Preparing AI Content... Please click again in 5 seconds if text doesn't appear.");
+        setIsAiLoading(true);
+        const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
+        await timer(2000);
+        
+        response = await fetch("/api/paragraphs?language=Hindi");
+        data = await response.json();
+        
+        if (Array.isArray(data) && data.length > 0) {
+          setPracticeText(data[Math.floor(Math.random() * data.length)].content);
+        } else {
+          alert("AI is preparing fresh content. Please try clicking again in a few seconds.");
+        }
       }
     } catch (e) {
       console.error("AI Generation Error:", e);
-      alert("AI Service is currently busy. Please try again later.");
+      alert("Note: AI generation might take up to 10 seconds. Please try again.");
     } finally {
       setIsAiLoading(false);
     }

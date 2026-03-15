@@ -19,22 +19,31 @@ export async function generateParagraph(language: string, difficulty: string) {
 
 
   try {
-    // Try Groq first (faster)
+    console.log(`Generating ${language} paragraph via Groq...`);
     const groqResponse = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "mixtral-8x7b-32768",
+      model: "llama-3.1-8b-instant",
+      temperature: 0.7,
+      max_tokens: 1024,
     });
 
-    return groqResponse.choices[0]?.message?.content || "";
+    const content = groqResponse.choices[0]?.message?.content || "";
+    if (content) return content;
+    throw new Error("Empty response from Groq");
   } catch (error) {
     console.error("Groq error, trying OpenAI...", error);
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-    });
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini", // Faster and cheaper than 3.5-turbo
+        messages: [{ role: "user", content: prompt }],
+      });
 
-    return response.choices[0]?.message?.content || "";
+      return response.choices[0]?.message?.content || "";
+    } catch (oaError) {
+      console.error("OpenAI error as well:", oaError);
+      return "";
+    }
   }
 }
 
