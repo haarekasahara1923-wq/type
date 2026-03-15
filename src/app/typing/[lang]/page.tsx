@@ -68,13 +68,20 @@ export default function DynamicTypingPage() {
   const handleAiGenerate = async () => {
     setIsAiLoading(true);
     try {
-      const response = await fetch("/api/paragraphs?language=" + (lang === "hindi" ? "Hindi" : "English") + "&difficulty=Intermediate");
+      // First try to get from database
+      const response = await fetch("/api/paragraphs?language=" + (lang === "hindi" ? "Hindi" : "English"));
       const data = await response.json();
-      if (data && data.length > 0) {
+      
+      if (Array.isArray(data) && data.length > 0) {
         setPracticeText(data[Math.floor(Math.random() * data.length)].content);
+      } else {
+        // If DB is empty or fails, fallback to direct generation via a new POST endpoint or just alert
+        alert("Preparing AI Content... Please click again in 5 seconds if text doesn't appear.");
+         // The GET endpoint has a fallback internally to generate, so it might just need a retry or it's slow.
       }
     } catch (e) {
-      console.error(e);
+      console.error("AI Generation Error:", e);
+      alert("AI Service is currently busy. Please try again later.");
     } finally {
       setIsAiLoading(false);
     }
