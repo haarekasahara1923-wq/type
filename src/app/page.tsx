@@ -208,7 +208,7 @@ export default function Home() {
                <img 
                  src="/girraj-sir.jpg" 
                  alt="Girraj Sharma Sir"
-                 className="w-full h-full object-cover"
+                 className="w-full h-full object-cover object-top"
                  onError={(e) => {
                    (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Girraj+Sharma&background=000&color=fff&size=512";
                  }}
