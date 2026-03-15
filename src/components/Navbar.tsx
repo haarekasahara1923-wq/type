@@ -17,8 +17,14 @@ import {
   Languages
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+interface NavItem {
+  name: string;
+  icon: JSX.Element;
+  href?: string;
+  dropdown?: { name: string; href: string }[];
+}
 
-const navItems = [
+const navItems: NavItem[] = [
   {
     name: "Typing",
     icon: <Languages size={18} />,
@@ -75,13 +81,31 @@ const navItems = [
   {
     name: "Download",
     icon: <Download size={18} />,
-    href: "#"
+    href: "/download"
   }
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  // Flatten all sub-items for searching
+  const searchableItems: { name: string; href: string; parent: string | null }[] = [];
+  navItems.forEach(item => {
+    if (item.dropdown) {
+      item.dropdown.forEach(sub => {
+        searchableItems.push({ name: sub.name, href: sub.href, parent: item.name });
+      });
+    } else {
+      searchableItems.push({ name: item.name, href: item.href || "#", parent: null });
+    }
+  });
+
+  const filteredResults = searchableItems.filter(item => 
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ).slice(0, 5);
 
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
@@ -152,13 +176,45 @@ export default function Navbar() {
               <input 
                 type="text" 
                 placeholder="Search tools..." 
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchResults(e.target.value.length > 0);
+                }}
+                onFocus={() => searchQuery.length > 0 && setShowSearchResults(true)}
+                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
                 className="pl-10 pr-4 py-2 bg-zinc-100 border-none rounded-full text-sm focus:ring-2 focus:ring-brand-primary/50 w-48 transition-all focus:w-64 outline-none"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+              
+              {/* Search Results Dropdown */}
+              {showSearchResults && filteredResults.length > 0 && (
+                <div className="absolute right-0 mt-3 w-64 bg-white border border-zinc-200 rounded-2xl shadow-2xl py-3 z-[100] animate-in fade-in zoom-in-95 duration-200">
+                  <div className="px-4 py-1 text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Search Results</div>
+                  {filteredResults.map((result, idx) => (
+                    <Link
+                      key={idx}
+                      href={result.href}
+                      className="block px-4 py-2 hover:bg-zinc-50 group"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setShowSearchResults(false);
+                      }}
+                    >
+                      <div className="text-sm font-bold text-zinc-800 group-hover:text-brand-primary">{result.name}</div>
+                      {result.parent && <div className="text-[10px] text-zinc-400 uppercase font-black">{result.parent}</div>}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
-            <button className="p-2 text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 rounded-full transition-colors">
+            <Link 
+              href="/admin" 
+              className="p-2 text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 rounded-full transition-colors"
+              title="Admin Panel"
+            >
               <Monitor size={20} />
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
