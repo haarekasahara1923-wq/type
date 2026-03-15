@@ -239,12 +239,20 @@ export default function Navbar() {
                 </div>
               </div>
             ) : (
-              <Link 
-                href="/auth/login"
-                className="px-6 py-2 bg-brand-primary text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
-              >
-                Sign In
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link 
+                  href="/auth/login"
+                  className="px-5 py-2 text-zinc-600 hover:text-brand-primary text-sm font-bold transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link 
+                  href="/auth/signup"
+                  className="px-5 py-2 bg-brand-primary text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
+                >
+                  Create Account
+                </Link>
+              </div>
             )}
           </div>
 
