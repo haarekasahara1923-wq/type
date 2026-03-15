@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Keyboard, ArrowRight, Languages } from "lucide-react";
+import { Keyboard, ArrowRight } from "lucide-react";
 
 export default function KeyboardsIndexPage() {
   const keyboards = [

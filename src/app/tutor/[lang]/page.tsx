@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { BookOpen, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useParams } from "next/navigation";
 

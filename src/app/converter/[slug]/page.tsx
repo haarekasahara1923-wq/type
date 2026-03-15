@@ -5,8 +5,7 @@ import {
   RefreshCcw, 
   Copy, 
   ArrowRightLeft,
-  FileText,
-  AlertCircle
+  FileText
 } from "lucide-react";
 import { useParams } from "next/navigation";
 
