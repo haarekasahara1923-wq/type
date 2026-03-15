@@ -10,7 +10,15 @@ import {
   ArrowRight,
   TrendingUp,
   Award,
-  Zap
+  Zap,
+  GraduationCap,
+  Users,
+  Briefcase,
+  BadgeCheck,
+  CheckCircle2,
+  Phone,
+  MessageSquare,
+  ShieldCheck
 } from "lucide-react";
 
 const tools = [
@@ -114,44 +122,131 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tools Grid */}
+      {/* ADMISSIONS OPEN 2026 BANNER */}
+      <section className="bg-zinc-900 overflow-hidden py-4 border-y border-white/10">
+        <div className="flex whitespace-nowrap animate-marquee">
+          {[...Array(10)].map((_, i) => (
+            <span key={i} className="text-orange-400 font-extrabold text-lg uppercase tracking-widest mx-10 flex items-center gap-4">
+              <Zap size={20} fill="currentColor" />
+              ADMISSIONS OPEN 2026 BATCH STARTED! • JOIN NOW
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* Tools Grid Section Content (Keep current tools grid but wrap it better) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
           <div>
-            <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Powerful Typing Tools</h2>
-            <p className="text-zinc-500 mt-2 font-medium">Everything you need to improve your speed in one place.</p>
+            <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Our Professional Courses</h2>
+            <p className="text-zinc-500 mt-2 font-medium italic">"Shape Your Future With Digital Skills"</p>
           </div>
-          <Link href="#" className="text-brand-primary font-bold hover:underline flex items-center gap-1 group">
-            View all 50+ tools <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {tools.map((cat) => (
-            <div key={cat.category} className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white rounded-xl border border-zinc-200 shadow-sm">
-                  {cat.icon}
-                </div>
-                <h3 className="font-black text-zinc-800 uppercase tracking-wider text-sm">{cat.category}</h3>
-              </div>
-              <div className="space-y-3">
-                {cat.items.map((item) => (
-                  <Link 
-                    key={item.name} 
-                    href={item.href}
-                    className="block p-4 bg-white border border-zinc-200 rounded-2xl hover:border-brand-primary hover:shadow-md transition-all group"
-                  >
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-bold text-zinc-900 group-hover:text-brand-primary transition-colors">{item.name}</h4>
-                      <ArrowRight size={14} className="text-zinc-300 -rotate-45 group-hover:rotate-0 transition-transform group-hover:text-brand-primary" />
-                    </div>
-                    <p className="text-xs text-zinc-500 mt-1 line-clamp-1">{item.desc}</p>
-                  </Link>
-                ))}
-              </div>
+        {/* Courses Grid from Ad Creative */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+          {[
+            { title: "Social Media Marketing", desc: "Master Facebook, Google Ads & Branding", icon: <TrendingUp className="text-blue-500" /> },
+            { title: "DCA / PGDCA", desc: "Recognized Computer Diploma Courses", icon: <FileText className="text-orange-500" /> },
+            { title: "Tally Prime with GST", desc: "Complete Accounting & Taxation Training", icon: <BadgeCheck className="text-green-500" /> },
+            { title: "CPCT Preparation", desc: "Specialized Training for CPCT Exams", icon: <GraduationCap className="text-purple-500" /> },
+            { title: "Job Oriented AI Courses", desc: "Learn Generative AI & Automation", icon: <Zap className="text-yellow-500" /> },
+            { title: "ITI (All Trades)", desc: "Technical Vocational Training Programs", icon: <Monitor className="text-zinc-600" /> },
+            { title: "Digital Marketing", desc: "SEO, Content Marketing & Strategy", icon: <Users className="text-sky-500" /> },
+            { title: "Academic Degrees", desc: "BBA, BCA, BTech, B.Com, MBA & More", icon: <CheckCircle2 className="text-red-500" /> },
+            { title: "Medical Diplomas", desc: "DPharma, BPharma & Special Degrees", icon: <ShieldCheck className="text-teal-500" /> },
+          ].map((course, idx) => (
+            <div key={idx} className="p-8 bg-white border border-zinc-200 rounded-[32px] hover:border-brand-primary hover:shadow-2xl transition-all group relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-50 rounded-bl-full -mr-8 -mt-8 group-hover:bg-orange-50 transition-colors" />
+               <div className="p-3 bg-zinc-50 rounded-2xl w-fit mb-6 group-hover:bg-orange-100 group-hover:text-brand-primary transition-colors relative z-10">
+                 {course.icon}
+               </div>
+               <h3 className="text-xl font-black text-zinc-900 mb-2 group-hover:text-brand-primary transition-colors">{course.title}</h3>
+               <p className="text-zinc-500 text-sm font-medium leading-relaxed">{course.desc}</p>
             </div>
           ))}
+        </div>
+
+        {/* Director Profile Section */}
+        <div className="mt-20 flex flex-col lg:flex-row items-center gap-12 bg-white rounded-[48px] p-8 lg:p-12 border border-zinc-200 shadow-xl">
+           <div className="lg:w-1/3 relative">
+             <div className="w-full aspect-square bg-zinc-100 rounded-[40px] overflow-hidden border-8 border-white shadow-2xl skew-y-3">
+               <img 
+                 src="https://emax.wapiflow.site/girraj-sir.jpg" 
+                 alt="Girraj Sharma Sir"
+                 className="w-full h-full object-cover -skew-y-3 scale-110"
+                 onError={(e) => {
+                   (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Girraj+Sharma&background=000&color=fff&size=512";
+                 }}
+               />
+             </div>
+             <div className="absolute -bottom-4 -left-4 bg-zinc-900 text-white p-6 rounded-3xl shadow-2xl">
+                <p className="text-xs font-black uppercase tracking-widest text-orange-400 mb-1">Director</p>
+                <h4 className="text-xl font-bold">Girraj Sharma Sir</h4>
+             </div>
+           </div>
+           <div className="lg:w-2/3 space-y-6">
+              <div className="inline-block p-2 bg-orange-50 text-brand-primary rounded-xl font-black text-xs uppercase tracking-tighter">Limited Time Offer</div>
+              <h2 className="text-4xl font-black text-zinc-900 leading-tight">FREE Demo Class & Special Discount for First 50 Students!</h2>
+              <p className="text-lg text-zinc-600 font-medium leading-relaxed italic">"Our mission is to empower every student with high-end digital skills that lead directly to professional success and career growth."</p>
+              
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                 <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
+                    <Phone className="text-brand-primary" size={24} />
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-zinc-400">Call Now</p>
+                      <p className="font-bold text-zinc-900">79994 53467</p>
+                    </div>
+                 </div>
+                 <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
+                    <MessageSquare className="text-brand-primary" size={24} />
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-zinc-400">Whatsapp</p>
+                      <p className="font-bold text-zinc-900">74403 00480</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* Typing Tools Preview Section */}
+      <section className="bg-white py-20 border-y border-zinc-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+            <div>
+              <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Powerful Online Tools</h2>
+              <p className="text-zinc-500 mt-2 font-medium">Everything you need to improve your speed in one place.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {tools.map((cat) => (
+              <div key={cat.category} className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-zinc-50 rounded-xl border border-zinc-200">
+                    {cat.icon}
+                  </div>
+                  <h3 className="font-black text-zinc-800 uppercase tracking-wider text-sm">{cat.category}</h3>
+                </div>
+                <div className="space-y-3">
+                  {cat.items.map((item) => (
+                    <Link 
+                      key={item.name} 
+                      href={item.href}
+                      className="block p-4 bg-white border border-zinc-200 rounded-2xl hover:border-brand-primary hover:shadow-md transition-all group"
+                    >
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-bold text-zinc-900 group-hover:text-brand-primary transition-colors">{item.name}</h4>
+                        <ArrowRight size={14} className="text-zinc-300 -rotate-45 group-hover:rotate-0 transition-transform group-hover:text-brand-primary" />
+                      </div>
+                      <p className="text-xs text-zinc-500 mt-1 line-clamp-1">{item.desc}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -161,35 +256,21 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-4xl font-black leading-tight">Why Choose Emax Computer Education Center for Your Training?</h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
-                    <Zap className="text-orange-400" size={24} />
+              <h2 className="text-4xl font-black leading-tight">Why Choose Us for Your Training?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  { title: "Experienced Teachers", icon: <Users /> },
+                  { title: "Practical Lab Training", icon: <Monitor /> },
+                  { title: "Certificate Courses", icon: <BadgeCheck /> },
+                  { title: "Job Oriented Programs", icon: <Briefcase /> },
+                  { title: "Affordable Fees", icon: <ArrowRight /> },
+                  { title: "Small Batches", icon: <Zap /> },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-2xl">
+                    <div className="text-orange-400">{item.icon}</div>
+                    <span className="font-bold">{item.title}</span>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold mb-2">Advanced Transliteration</h4>
-                    <p className="text-zinc-400 leading-relaxed">Our Roman to Devanagari script conversion is state-of-the-art. Just type phonetically and get accurate Hindi results instantly.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
-                    <Monitor className="text-blue-400" size={24} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold mb-2">Exam Oriented Practice</h4>
-                    <p className="text-zinc-400 leading-relaxed">Prepare for government exams like SSC, Railway, and Banks with our dedicated exam modes that mimic real testing environments.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
-                    <Languages className="text-green-400" size={24} />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold mb-2">Multi-Language Support</h4>
-                    <p className="text-zinc-400 leading-relaxed">Not just Hindi and English. We support Punjabi, Marathi, Bengali, Telugu, Kannada and 10+ other languages.</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-sm">
