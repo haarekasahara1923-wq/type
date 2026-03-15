@@ -3,8 +3,33 @@
 import { useTypingStore } from "@/lib/store";
 import { CheckCircle2, RotateCcw, Share2, Award } from "lucide-react";
 
+import { useEffect } from "react";
+
 export default function ResultCard() {
-  const { wpm, accuracy, errors, reset } = useTypingStore();
+  const { wpm, accuracy, errors, reset, language } = useTypingStore();
+
+  useEffect(() => {
+    // Proactively save results to Neon database
+    const saveResult = async () => {
+      try {
+        await fetch("/api/results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            language,
+            wpm,
+            accuracy,
+            errors,
+            duration: 1800 // 30 mins from store logic
+          })
+        });
+      } catch (e) {
+        console.error("Auto-save failed:", e);
+      }
+    };
+
+    if (wpm > 0) saveResult();
+  }, [wpm, accuracy, errors, language]);
 
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-3xl p-10 shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-2xl mx-auto overflow-hidden relative">
