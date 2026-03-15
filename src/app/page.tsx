@@ -74,7 +74,7 @@ export default function Home() {
             </div>
             
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 leading-[1.1]">
-              Master Skills at <span className="text-brand-primary">E-Max Education</span>
+              Master Skills at <span className="text-brand-primary">Emax Computer Education Center</span>
             </h1>
             
             <p className="text-xl text-zinc-500 font-medium">
@@ -161,7 +161,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
-              <h2 className="text-4xl font-black leading-tight">Why Choose E-Max Center for Your Training?</h2>
+              <h2 className="text-4xl font-black leading-tight">Why Choose Emax Computer Education Center for Your Training?</h2>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
@@ -205,7 +205,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="font-bold text-orange-400 mb-2">Are these tools free?</p>
-                  <p className="text-zinc-400">Yes, every tool at E-Max Center is 100% free to use for students and professionals.</p>
+                  <p className="text-zinc-400">Yes, every tool at Emax Computer Education Center is 100% free to use for students and professionals.</p>
                 </div>
               </div>
             </div>

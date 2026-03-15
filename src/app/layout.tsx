@@ -11,7 +11,7 @@ const notoHindi = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "E-Max Typing Lab - Computer Education Center",
+  title: "Emax Computer Education Center",
   description: "Advanced White-label Typing Practice Platform for Computer Institutes",
 };
 

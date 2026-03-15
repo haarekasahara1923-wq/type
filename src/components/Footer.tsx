@@ -13,7 +13,7 @@ export default function Footer() {
                 EM
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-white leading-none">
-                E-Max<span className="text-brand-primary"> Center</span>
+                Emax<span className="text-brand-primary"> Computer Education Center</span>
               </span>
             </Link>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -80,7 +80,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium uppercase tracking-widest text-zinc-500">
-          <p>© {new Date().getFullYear()} E-Max Computer Education Center. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Emax Computer Education Center. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>

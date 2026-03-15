@@ -155,8 +155,8 @@ export default function DynamicTypingPage() {
               isFullScreen && "min-h-[calc(100vh-80px)] border-none rounded-none"
             )}
           />
-          <div className="absolute bottom-4 right-4 text-xs font-bold text-zinc-300 uppercase tracking-widest pointer-events-none">
-            Powered by E-Max Engine
+          <div className="absolute bottom-4 right-4 text-xs font-bold text-zinc-300 uppercase tracking-widest pointer-events-none text-right">
+            By Emax Computer Education Center
           </div>
         </div>
 

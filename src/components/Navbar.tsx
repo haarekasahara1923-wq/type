@@ -95,9 +95,9 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-extrabold tracking-tight text-zinc-900 leading-none">
-                  E-Max<span className="text-brand-primary"> Education</span>
+                  Emax<span className="text-brand-primary"> Computer</span>
                 </span>
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Computer Education Center</span>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none mt-1">Education Center</span>
               </div>
             </Link>
           </div>
