@@ -17,7 +17,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              India's leading typing portal providing free tools for typing practice, speed tests, and font conversions. Available in multiple Indian languages.
+              India&apos;s leading typing portal providing free tools for typing practice, speed tests, and font conversions. Available in multiple Indian languages.
             </p>
             <div className="flex gap-4">
               <Link href="#" className="w-10 h-10 border border-zinc-700 rounded-lg flex items-center justify-center hover:bg-brand-primary hover:border-brand-primary transition-colors text-white">

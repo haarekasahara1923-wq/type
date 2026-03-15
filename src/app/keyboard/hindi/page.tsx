@@ -4,13 +4,10 @@ import { useState } from "react";
 import { 
   Keyboard, 
   Languages, 
-  Info,
   Type,
   Copy,
-  Trash2,
-  Printer
+  Trash2
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const HINDI_LAYOUT = [
   ["१", "२", "३", "४", "५", "६", "७", "८", "९", "०", "-", "+"],
@@ -38,7 +35,7 @@ export default function HindiKeyboardPage() {
             Online Hindi Keyboard <span className="text-zinc-400 font-medium">(Visual Layout)</span>
           </h1>
           <p className="text-zinc-500 font-medium max-w-3xl">
-            Type in Devanagari script using our virtual Hindi keyboard. Perfect for users who don't have a Hindi keyboard or want to type with a mouse.
+            Type in Devanagari script using our virtual Hindi keyboard. Perfect for users who don&apos;t have a Hindi keyboard or want to type with a mouse.
           </p>
         </div>
 

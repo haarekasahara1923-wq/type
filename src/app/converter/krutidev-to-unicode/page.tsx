@@ -4,18 +4,11 @@ import { useState } from "react";
 import { 
   RefreshCcw, 
   Copy, 
-  Trash2, 
   ArrowRightLeft,
   FileText,
   AlertCircle
 } from "lucide-react";
 
-// Simplified KrutiDev to Unicode conversion mapping (Just for demonstration, complete mapping is huge)
-const convertKrutiToUnicode = (krutiText: string) => {
-  // This is a placeholder for the actual complex mapping logic
-  // In a real app, you would use a tested library or a full map
-  return krutiText; // Returning as is for now, would implement full logic in a real scenario
-};
 
 export default function KrutiDevConverter() {
   const [input, setInput] = useState("");
@@ -96,7 +89,7 @@ export default function KrutiDevConverter() {
             <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3">
               <AlertCircle className="text-blue-500 shrink-0" size={20} />
               <p className="text-xs text-blue-800 font-medium leading-relaxed">
-                <strong>Why Convert?</strong> KrutiDev is a font-dependent encoding. If the other person doesn't have the font, they will see gibberish. Unicode is the standard for the internet.
+                <strong>Why Convert?</strong> KrutiDev is a font-dependent encoding. If the other person doesn&apos;t have the font, they will see gibberish. Unicode is the standard for the internet.
               </p>
             </div>
           </div>
@@ -116,7 +109,7 @@ export default function KrutiDevConverter() {
             </div>
             <div className="space-y-4">
               <p>
-                Our converter tool helps you bridge this gap. Simply paste your Kruti Dev text in the input box, click "Convert", and you'll get the Unicode version that you can use on WhatsApp, Facebook, Email, or your website.
+                Our converter tool helps you bridge this gap. Simply paste your Kruti Dev text in the input box, click &quot;Convert&quot;, and you&apos;ll get the Unicode version that you can use on WhatsApp, Facebook, Email, or your website.
               </p>
               <ul className="list-disc pl-5 space-y-2 font-bold text-zinc-800">
                 <li>100% Accurate Mapping</li>

@@ -8,7 +8,7 @@ import MetricsDisplay from "@/components/MetricsDisplay";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import ResultCard from "@/components/ResultCard";
 import LanguageToggle from "@/components/LanguageToggle";
-import { GraduationCap, Loader2, FileText } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";

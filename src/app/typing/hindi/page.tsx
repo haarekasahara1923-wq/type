@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { 
   Languages, 
@@ -54,7 +54,7 @@ export default function HindiTypingPage() {
             </h1>
             <p className="text-zinc-500 font-medium max-w-3xl">
               Type in English (Roman) script and it will automatically convert into Devanagari script. 
-              For example, type <span className="text-brand-primary font-bold">"Bharat"</span> and press space to get <span className="text-brand-primary font-bold">"भारत"</span>.
+              For example, type <span className="text-brand-primary font-bold">&quot;Bharat&quot;</span> and press space to get <span className="text-brand-primary font-bold">&quot;भारत&quot;</span>.
             </p>
           </div>
         )}
@@ -145,7 +145,7 @@ export default function HindiTypingPage() {
                 </h3>
                 <div className="text-zinc-600 space-y-4 text-sm leading-relaxed">
                   <p>
-                    1. Type the Hindi word phonetically using English letters. For example, if you want to type <strong>"नमस्ते"</strong>, type <strong>"namaste"</strong>.
+                    1. Type the Hindi word phonetically using English letters. For example, if you want to type <strong>&quot;नमस्ते&quot;</strong>, type <strong>&quot;namaste&quot;</strong>.
                   </p>
                   <p>
                     2. After typing each word, press the <strong>SPACE</strong> key. The English word will automatically convert into Hindi.

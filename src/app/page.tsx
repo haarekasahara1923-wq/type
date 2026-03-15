@@ -5,11 +5,8 @@ import {
   Keyboard, 
   Languages, 
   Monitor, 
-  BookOpen, 
   FileText, 
-  Gamepad2, 
   RefreshCcw, 
-  Download,
   ArrowRight,
   TrendingUp,
   Award,
@@ -73,7 +70,7 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto space-y-8">
             <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-brand-primary px-4 py-1.5 rounded-full text-sm font-bold animate-bounce">
               <Zap size={16} fill="currentColor" />
-              <span>India's #1 Typing Tutorial Portal</span>
+              <span>India&apos;s #1 Typing Tutorial Portal</span>
             </div>
             
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 leading-[1.1]">
