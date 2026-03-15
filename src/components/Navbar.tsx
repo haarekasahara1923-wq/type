@@ -93,7 +93,7 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   // Flatten all sub-items for searching
   const searchableItems: { name: string; href: string; parent: string | null }[] = [];
@@ -213,28 +213,30 @@ export default function Navbar() {
               )}
             </div>
             
-            {session ? (
+            {status === "loading" ? (
+              <div className="w-24 h-8 bg-zinc-100 rounded-full animate-pulse" />
+            ) : session ? (
               <div className="flex items-center gap-3">
                 {session.user?.role === "admin" && (
                   <Link 
-                    href="/admin" 
-                    className="p-2 text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 rounded-full transition-colors"
+                    href="/admin/dashboard" 
+                    className="flex items-center gap-1.5 px-3 py-2 text-zinc-600 hover:text-brand-primary hover:bg-zinc-100 rounded-lg text-sm font-bold transition-colors"
                     title="Admin Panel"
                   >
-                    <Monitor size={20} />
+                    <Monitor size={16} /> Admin
                   </Link>
                 )}
-                <div className="flex items-center gap-2 pl-4 border-l border-zinc-200">
+                <div className="flex items-center gap-2 pl-3 border-l border-zinc-200">
                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-700">
                      <UserCircle size={20} className="text-brand-primary" />
-                     <span className="max-w-[150px] truncate">Hello, {session.user?.name || "Student"}</span>
+                     <span className="max-w-[130px] truncate">Hello, {session.user?.name?.split(" ")[0] || "Student"}</span>
                    </div>
                    <button 
-                     onClick={() => signOut()}
-                     className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors ml-2"
+                     onClick={() => signOut({ callbackUrl: "/" })}
+                     className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-1"
                      title="Sign Out"
                    >
-                     <LogOut size={18} />
+                     <LogOut size={16} /> Sign Out
                    </button>
                 </div>
               </div>
@@ -258,19 +260,18 @@ export default function Navbar() {
 
           {/* Mobile menu button and User Actions */}
           <div className="flex lg:hidden items-center gap-2">
-            {session ? (
-              <div className="flex items-center gap-2 mr-2">
-                <span className="text-sm font-bold text-zinc-700 max-w-[100px] truncate">
-                  Hi, {session.user?.name?.split(" ")[0] || "Student"}
-                </span>
-              </div>
-            ) : (
+            {status !== "loading" && !session && (
               <Link 
                 href="/auth/login"
                 className="px-4 py-1.5 bg-brand-primary text-white text-xs font-bold rounded-full mr-1"
               >
                 Sign In
               </Link>
+            )}
+            {status !== "loading" && session && (
+              <span className="text-sm font-bold text-zinc-700 max-w-[100px] truncate mr-1">
+                Hi, {session.user?.name?.split(" ")[0] || "Student"}
+              </span>
             )}
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -324,7 +325,7 @@ export default function Navbar() {
                   </div>
                   {session.user?.role === "admin" && (
                     <Link
-                      href="/admin"
+                      href="/admin/dashboard"
                       className="block px-3 py-3 text-base font-bold text-zinc-700 hover:text-brand-primary hover:bg-zinc-50 rounded-md mt-2 flex items-center gap-2"
                       onClick={() => setIsOpen(false)}
                     >
@@ -333,7 +334,7 @@ export default function Navbar() {
                   )}
                   <button
                     onClick={() => {
-                      signOut();
+                      signOut({ callbackUrl: "/" });
                       setIsOpen(false);
                     }}
                     className="w-full text-left px-3 py-3 text-base font-bold text-red-500 hover:bg-red-50 rounded-md mt-2 flex items-center gap-2"

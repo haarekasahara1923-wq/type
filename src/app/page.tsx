@@ -18,7 +18,6 @@ import {
   BadgeCheck,
   CheckCircle2,
   Phone,
-  MessageSquare,
   ShieldCheck,
   X
 } from "lucide-react";
@@ -233,19 +232,12 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                 <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
+              <div className="flex items-center pt-4">
+                 <div className="bg-zinc-50 px-6 py-4 rounded-2xl border border-zinc-100 flex items-center gap-4">
                     <Phone className="text-brand-primary" size={24} />
                     <div>
-                      <p className="text-[10px] font-black uppercase text-zinc-400">Call Now</p>
-                      <p className="font-bold text-zinc-900">79994 53467</p>
-                    </div>
-                 </div>
-                 <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
-                    <MessageSquare className="text-brand-primary" size={24} />
-                    <div>
-                      <p className="text-[10px] font-black uppercase text-zinc-400">Whatsapp</p>
-                      <p className="font-bold text-zinc-900">74403 00480</p>
+                      <p className="text-xs font-black uppercase text-zinc-400">Call/WhatsApp Now</p>
+                      <p className="font-bold text-lg text-zinc-900">7999453467</p>
                     </div>
                  </div>
               </div>
