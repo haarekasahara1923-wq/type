@@ -1,123 +1,244 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTypingStore } from "@/lib/store";
-import TypingBox from "@/components/TypingBox";
-import Timer from "@/components/Timer";
-import MetricsDisplay from "@/components/MetricsDisplay";
-import KeyboardLayout from "@/components/KeyboardLayout";
-import ResultCard from "@/components/ResultCard";
-import LanguageToggle from "@/components/LanguageToggle";
-import { GraduationCap, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { 
+  Keyboard, 
+  Languages, 
+  Monitor, 
+  BookOpen, 
+  FileText, 
+  Gamepad2, 
+  RefreshCcw, 
+  Download,
+  ArrowRight,
+  TrendingUp,
+  Award,
+  Zap
+} from "lucide-react";
+
+const tools = [
+  {
+    category: "Typing Tools",
+    icon: <Languages className="text-orange-500" size={24} />,
+    items: [
+      { name: "Hindi Typing", href: "/typing/hindi", desc: "Type in English to get Hindi text" },
+      { name: "Marathi Typing", href: "#", desc: "Phonetic Marathi typing tool" },
+      { name: "Punjabi Typing", href: "#", desc: "Simple Panjabi typing software" },
+      { name: "Tamil Typing", href: "#", desc: "Online Tamil typing tool" },
+    ]
+  },
+  {
+    category: "Typing Tests",
+    icon: <FileText className="text-blue-500" size={24} />,
+    items: [
+      { name: "English Typing Test", href: "/typing-test?lang=English", desc: "Check your speed in English" },
+      { name: "Hindi Typing Test", href: "/typing-test?lang=Hindi", desc: "Hindi Mangal/KrutiDev Test" },
+      { name: "Exam Mode Test", href: "/typing-test?mode=exam", desc: "SSC/Railway Pattern Practice" },
+      { name: "Custom Test", href: "/typing-test", desc: "Upload your own paragraph" },
+    ]
+  },
+  {
+    category: "Tutor & Keyboards",
+    icon: <Keyboard className="text-green-500" size={24} />,
+    items: [
+      { name: "Hindi Typing Tutor", href: "#", desc: "Step-by-step Hindi learning" },
+      { name: "English Typing Tutor", href: "#", desc: "56 Lessons for beginners" },
+      { name: "Virtual Hindi Keyboard", href: "/keyboard/hindi", desc: "Type using mouse or keys" },
+      { name: "All Online Keyboards", href: "/keyboard", desc: "100+ language keyboards" },
+    ]
+  },
+  {
+    category: "Converters & Games",
+    icon: <RefreshCcw className="text-purple-500" size={24} />,
+    items: [
+      { name: "KrutiDev to Unicode", href: "/converter/krutidev-to-unicode", desc: "Universal font conversion" },
+      { name: "Unicode to KrutiDev", href: "#", desc: "Web content to Kruti Dev" },
+      { name: "Typing Tank Game", href: "#", desc: "Destroy tanks by typing words" },
+      { name: "Download Fonts", href: "#", desc: "KrutiDev, Mangal, Asees" },
+    ]
+  }
+];
 
 export default function Home() {
-  const { isFinished, setContent, language } = useTypingStore();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(`/api/paragraphs?language=${language}`);
-        const data = await res.json();
-        
-        if (data && data.length > 0) {
-          const randomIndex = Math.floor(Math.random() * data.length);
-          setContent(data[randomIndex].content);
-        } else {
-          // Fallback if no data in DB
-          const fallback = language === 'English' 
-            ? "In the rapidly evolving world of digital information technology, the ability to process and communicate data quickly and accurately has become a cornerstone of professional success. Computer literacy is no longer just an additional skill but a fundamental requirement in almost every sector of the global economy. From complex data analysis to simple administrative tasks, technology integrates into our daily workflows, demanding a high level of proficiency and adaptability. Developing a strong typing speed with high accuracy allows professionals to translate their thoughts into digital form seamlessly, thereby increasing productivity and reducing cognitive strain. As we move further into the age of artificial intelligence and automated systems, the human element remains vital in guiding these tools and ensuring that the output aligns with organizational goals and ethical standards."
-            : "डिजिटल सूचना प्रौद्योगिकी की तेजी से बदलती दुनिया में, डेटा को जल्दी और सही तरीके से संसाधित और संप्रेषित करने की क्षमता पेशेवर सफलता का एक आधार बन गई है। कंप्यूटर साक्षरता अब केवल एक अतिरिक्त कौशल नहीं है, बल्कि वैश्विक अर्थव्यवस्था के लगभग हर क्षेत्र में एक मौलिक आवश्यकता है। जटिल डेटा विश्लेषण से लेकर सरल प्रशासनिक कार्यों तक, प्रौद्योगिकी हमारे दैनिक वर्कफ़्लो में एकीकृत होती है, जिसमें उच्च स्तर की दक्षता और अनुकूलन क्षमता की आवश्यकता होती है। उच्च सटीकता के साथ एक मजबूत टाइपिंग गति विकसित करने से पेशेवरों को अपने विचारों को डिजिटल रूप में निर्बाध रूप से अनुवाद करने की अनुमति मिलती है जिससे उत्पादकता बढ़ती है और मानसिक तनाव कम होता है। जैसे-जैसे हम कृत्रिम बुद्धिमत्ता और स्वचालित प्रणालियों के युग में आगे बढ़ते हैं, इन उपकरणों का मार्गदर्शन करने और यह सुनिश्चित करने में मानवीय तत्व महत्वपूर्ण बना रहता है कि आउटपुट संगठनात्मक लक्ष्यों और नैतिक मानकों के साथ संरेखित हो।";
-          setContent(fallback);
-        }
-
-      } catch (error) {
-        console.error("Failed to fetch content", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchContent();
-  }, [language, setContent]);
-
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-brand-primary selection:text-white">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 z-40">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
-              <GraduationCap size={24} />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">
-                {process.env.NEXT_PUBLIC_BRAND_NAME?.split(' ')[0] || "E-Max"} <span className="text-brand-primary">{process.env.NEXT_PUBLIC_BRAND_NAME?.split(' ').slice(1).join(' ') || "Typing Lab"}</span>
-              </h1>
-              <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Typing Lab & Certification</p>
-            </div>
-          </div>
+    <div className="bg-zinc-50 min-h-screen">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-white pt-16 pb-20 lg:pt-24 lg:pb-32 border-b border-zinc-200">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-5 pointer-events-none">
+          <div className="absolute top-10 left-10 w-96 h-96 bg-brand-primary rounded-full blur-[120px]" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-blue-500 rounded-full blur-[120px]" />
+        </div>
 
-          <div className="flex items-center gap-6">
-            <LanguageToggle />
-            <div className="h-8 w-px bg-zinc-200 dark:bg-zinc-800" />
-            <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1.5 rounded-full border border-green-500/20">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-bold text-green-600 dark:text-green-400 uppercase tracking-widest">Live Exam</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center max-w-3xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-brand-primary px-4 py-1.5 rounded-full text-sm font-bold animate-bounce">
+              <Zap size={16} fill="currentColor" />
+              <span>India's #1 Typing Tutorial Portal</span>
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 leading-[1.1]">
+              Master Your Typing Skills with <span className="text-brand-primary">TypingBaba</span>
+            </h1>
+            
+            <p className="text-xl text-zinc-500 font-medium">
+              Free online tools for Hindi & English Typing, Speed Tests, Font Converters, and much more. Start practicing now and boost your productivity!
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link 
+                href="/typing-test?lang=English" 
+                className="bg-brand-primary hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/20 transition-all hover:-translate-y-1 flex items-center gap-2"
+              >
+                English Typing Test <ArrowRight size={20} />
+              </Link>
+              <Link 
+                href="/typing-test?lang=Hindi" 
+                className="bg-zinc-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-zinc-900/20 transition-all hover:-translate-y-1"
+              >
+                Hindi Typing Test
+              </Link>
+            </div>
+
+            <div className="flex justify-center items-center gap-8 pt-10 text-zinc-400">
+              <div className="flex items-center gap-2">
+                <TrendingUp size={20} />
+                <span className="text-sm font-bold uppercase tracking-wider">Fast Results</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award size={20} />
+                <span className="text-sm font-bold uppercase tracking-wider">Accurate Metrics</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Monitor size={20} />
+                <span className="text-sm font-bold uppercase tracking-wider">Exam Ready</span>
+              </div>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
-      <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-[calc(100vh-100px)]">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-[500px] gap-4">
-            <Loader2 className="w-12 h-12 text-brand-primary animate-spin" />
-            <p className="text-zinc-400 font-bold uppercase tracking-widest text-sm">Preparing Examination...</p>
+      {/* Tools Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+          <div>
+            <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Powerful Typing Tools</h2>
+            <p className="text-zinc-500 mt-2 font-medium">Everything you need to improve your speed in one place.</p>
           </div>
-        ) : !isFinished ? (
-          <div className="space-y-10 animate-in fade-in duration-700">
-            {/* Top Stats Section */}
-            <div className="flex flex-col lg:flex-row gap-8 items-start">
-              <div className="flex-1 w-full">
-                <MetricsDisplay />
+          <Link href="#" className="text-brand-primary font-bold hover:underline flex items-center gap-1 group">
+            View all 50+ tools <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {tools.map((cat) => (
+            <div key={cat.category} className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white rounded-xl border border-zinc-200 shadow-sm">
+                  {cat.icon}
+                </div>
+                <h3 className="font-black text-zinc-800 uppercase tracking-wider text-sm">{cat.category}</h3>
               </div>
-              <div className="w-full lg:w-72">
-                <Timer />
+              <div className="space-y-3">
+                {cat.items.map((item) => (
+                  <Link 
+                    key={item.name} 
+                    href={item.href}
+                    className="block p-4 bg-white border border-zinc-200 rounded-2xl hover:border-brand-primary hover:shadow-md transition-all group"
+                  >
+                    <div className="flex justify-between items-start">
+                      <h4 className="font-bold text-zinc-900 group-hover:text-brand-primary transition-colors">{item.name}</h4>
+                      <ArrowRight size={14} className="text-zinc-300 -rotate-45 group-hover:rotate-0 transition-transform group-hover:text-brand-primary" />
+                    </div>
+                    <p className="text-xs text-zinc-500 mt-1 line-clamp-1">{item.desc}</p>
+                  </Link>
+                ))}
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Main Typing Area */}
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-brand-primary to-orange-400 rounded-[32px] blur opacity-5 group-hover:opacity-10 transition duration-1000"></div>
-              <TypingBox />
+      {/* SEO Section / Why Choose Us */}
+      <section className="bg-zinc-900 text-white py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <h2 className="text-4xl font-black leading-tight">Why Choose TypingBaba for Your Training?</h2>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
+                    <Zap className="text-orange-400" size={24} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Advanced Transliteration</h4>
+                    <p className="text-zinc-400 leading-relaxed">Our Roman to Devanagari script conversion is state-of-the-art. Just type phonetically and get accurate Hindi results instantly.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
+                    <Monitor className="text-blue-400" size={24} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Exam Oriented Practice</h4>
+                    <p className="text-zinc-400 leading-relaxed">Prepare for government exams like SSC, Railway, and Banks with our dedicated exam modes that mimic real testing environments.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/10">
+                    <Languages className="text-green-400" size={24} />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2">Multi-Language Support</h4>
+                    <p className="text-zinc-400 leading-relaxed">Not just Hindi and English. We support Punjabi, Marathi, Bengali, Telugu, Kannada and 10+ other languages.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <div className="text-center">
-              <p className="text-zinc-400 text-sm italic py-4 border-y border-zinc-100 dark:border-zinc-800 inline-block px-10">
-                Tip: Keep your fingers relaxed and look at the screen, not the keyboard.
-              </p>
+            <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 backdrop-blur-sm">
+              <h3 className="text-2xl font-bold mb-6">Frequently Asked Questions</h3>
+              <div className="space-y-6 text-sm">
+                <div className="border-b border-white/10 pb-4">
+                  <p className="font-bold text-orange-400 mb-2">How to increase typing speed?</p>
+                  <p className="text-zinc-400">Regular practice, maintaining correct posture, and not looking at the keyboard are key. Use our tutor lessons to master the finger positions.</p>
+                </div>
+                <div className="border-b border-white/10 pb-4">
+                  <p className="font-bold text-orange-400 mb-2">What is KrutiDev to Unicode?</p>
+                  <p className="text-zinc-400">KrutiDev is a font-based encoding while Unicode is a global standard. Our converter helps you use KrutiDev text on the web easily.</p>
+                </div>
+                <div>
+                  <p className="font-bold text-orange-400 mb-2">Are these tools free?</p>
+                  <p className="text-zinc-400">Yes, every tool on TypingBaba is 100% free to use for students and professionals.</p>
+                </div>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="animate-in zoom-in-95 duration-500">
-            <ResultCard />
-          </div>
-        )}
-      </div>
+        </div>
+      </section>
 
-      <KeyboardLayout />
-      
-      {/* Footer Branding */}
-      <footer className="py-10 text-center border-t border-zinc-200 dark:border-zinc-800">
-        <p className="text-zinc-500 text-sm">
-          &copy; {new Date().getFullYear()} {process.env.NEXT_PUBLIC_BRAND_NAME}. All rights reserved. 
-          <span className="mx-2">|</span>
-          White-label Typing SaaS Platform
-        </p>
-      </footer>
-    </main>
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-brand-primary rounded-[40px] p-12 text-center text-white space-y-8 shadow-2xl shadow-orange-500/40">
+            <h2 className="text-3xl md:text-5xl font-black">Ready to Start Practicing?</h2>
+            <p className="text-xl text-white/80 font-medium">Join thousands of students who have improved their typing speed with our tools.</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link 
+                href="/typing-test" 
+                className="bg-zinc-900 text-white px-10 py-4 rounded-2xl font-bold text-xl hover:bg-black transition-colors"
+              >
+                Start Speed Test
+              </Link>
+              <Link 
+                href="/keyboard" 
+                className="bg-white text-brand-primary px-10 py-4 rounded-2xl font-bold text-xl hover:bg-zinc-50 transition-colors"
+              >
+                Virtual Keyboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
-

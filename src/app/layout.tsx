@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   description: "Advanced White-label Typing Practice Platform for Computer Institutes",
 };
 
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,8 +25,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.variable, notoHindi.variable, "antialiased font-sans")}>
-        {children}
+      <body className={cn(inter.variable, notoHindi.variable, "antialiased font-sans flex flex-col min-h-screen")}>
+        <Navbar />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
