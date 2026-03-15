@@ -212,7 +212,6 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            </div>
             
             {session ? (
               <div className="flex items-center gap-3">
@@ -292,7 +291,6 @@ export default function Navbar() {
                 </Link>
               )}
             </div>
-          ))}
           ))}
           
           <div className="mt-6 pt-4 border-t border-zinc-100">
