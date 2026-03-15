@@ -137,32 +137,36 @@ export default function Home() {
       {/* Tools Grid Section Content (Keep current tools grid but wrap it better) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-          <div>
-            <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Our Professional Courses</h2>
-            <p className="text-zinc-500 mt-2 font-medium italic">&quot;Shape Your Future With Digital Skills&quot;</p>
+          <div className="text-center w-full">
+            <h2 className="text-4xl font-black text-zinc-900 tracking-tight">Emax Professional Courses</h2>
+            <p className="text-zinc-500 mt-3 font-bold uppercase tracking-widest text-sm">&quot;Shape Your Future With Digital Skills&quot;</p>
+            <div className="w-24 h-1.5 bg-brand-primary mx-auto mt-4 rounded-full" />
           </div>
         </div>
 
         {/* Courses Grid from Ad Creative */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
           {[
-            { title: "Social Media Marketing", desc: "Master Facebook, Google Ads & Branding", icon: <TrendingUp className="text-blue-500" /> },
-            { title: "DCA / PGDCA", desc: "Recognized Computer Diploma Courses", icon: <FileText className="text-orange-500" /> },
-            { title: "Tally Prime with GST", desc: "Complete Accounting & Taxation Training", icon: <BadgeCheck className="text-green-500" /> },
-            { title: "CPCT Preparation", desc: "Specialized Training for CPCT Exams", icon: <GraduationCap className="text-purple-500" /> },
-            { title: "Job Oriented AI Courses", desc: "Learn Generative AI & Automation", icon: <Zap className="text-yellow-500" /> },
-            { title: "ITI (All Trades)", desc: "Technical Vocational Training Programs", icon: <Monitor className="text-zinc-600" /> },
-            { title: "Digital Marketing", desc: "SEO, Content Marketing & Strategy", icon: <Users className="text-sky-500" /> },
-            { title: "Academic Degrees", desc: "BBA, BCA, BTech, B.Com, MBA & More", icon: <CheckCircle2 className="text-red-500" /> },
-            { title: "Medical Diplomas", desc: "DPharma, BPharma & Special Degrees", icon: <ShieldCheck className="text-teal-500" /> },
+            { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", icon: <TrendingUp className="text-blue-600" />, bgColor: "bg-blue-50" },
+            { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", icon: <FileText className="text-orange-600" />, bgColor: "bg-orange-50" },
+            { title: "Tally Prime with GST", desc: "Master professional accounting, inventory management, and GST filing from scratch.", icon: <BadgeCheck className="text-green-600" />, bgColor: "bg-green-50" },
+            { title: "CPCT Preparation", desc: "Special batches for MP CPCT exam with focus on typing speed and theory accuracy.", icon: <GraduationCap className="text-purple-600" />, bgColor: "bg-purple-50" },
+            { title: "Job Oriented AI Courses", desc: "Stay ahead with Generative AI tools like ChatGPT, Midjourney for workplace productivity.", icon: <Zap className="text-yellow-600" />, bgColor: "bg-yellow-50" },
+            { title: "ITI Training", desc: "Technical vocational training for all trades with practical focus on employability.", icon: <Monitor className="text-zinc-700" />, bgColor: "bg-zinc-100" },
+            { title: "Digital Marketing", desc: "Join our comprehensive course on SEO, Content Marketing, and Online Strategy.", icon: <Users className="text-sky-600" />, bgColor: "bg-sky-50" },
+            { title: "Academic Degrees", desc: "Admission guidance for BBA, BCA, BTech, B.Com, MBA & MTech programs.", icon: <CheckCircle2 className="text-red-600" />, bgColor: "bg-red-50" },
+            { title: "Medical & Nursing", desc: "Enroll in DPharma, BPharma, D.Ed and other high-demand medical diplomas.", icon: <ShieldCheck className="text-teal-600" />, bgColor: "bg-teal-50" },
           ].map((course, idx) => (
-            <div key={idx} className="p-8 bg-white border border-zinc-200 rounded-[32px] hover:border-brand-primary hover:shadow-2xl transition-all group relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-50 rounded-bl-full -mr-8 -mt-8 group-hover:bg-orange-50 transition-colors" />
-               <div className="p-3 bg-zinc-50 rounded-2xl w-fit mb-6 group-hover:bg-orange-100 group-hover:text-brand-primary transition-colors relative z-10">
+            <div key={idx} className="p-10 bg-white border border-zinc-200 rounded-[40px] hover:border-brand-primary shadow-sm hover:shadow-2xl transition-all duration-300 group relative flex flex-col items-start text-left">
+               <div className={cn("p-4 rounded-[20px] mb-8 group-hover:scale-110 transition-transform", course.bgColor)}>
                  {course.icon}
                </div>
-               <h3 className="text-xl font-black text-zinc-900 mb-2 group-hover:text-brand-primary transition-colors">{course.title}</h3>
-               <p className="text-zinc-500 text-sm font-medium leading-relaxed">{course.desc}</p>
+               <h3 className="text-2xl font-black text-zinc-900 mb-4 group-hover:text-brand-primary transition-colors">{course.title}</h3>
+               <p className="text-zinc-600 text-base font-medium leading-relaxed">{course.desc}</p>
+               <div className="mt-8 pt-6 border-t border-zinc-100 w-full flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Enrolment Open</span>
+                  <ArrowRight size={18} className="text-brand-primary" />
+               </div>
             </div>
           ))}
         </div>
@@ -186,10 +190,19 @@ export default function Home() {
                 <h4 className="text-xl font-bold">Girraj Sharma Sir</h4>
              </div>
            </div>
-           <div className="lg:w-2/3 space-y-6">
-              <div className="inline-block p-2 bg-orange-50 text-brand-primary rounded-xl font-black text-xs uppercase tracking-tighter">Limited Time Offer</div>
-              <h2 className="text-4xl font-black text-zinc-900 leading-tight">FREE Demo Class & Special Discount for First 50 Students!</h2>
-              <p className="text-lg text-zinc-600 font-medium leading-relaxed italic">&quot;Our mission is to empower every student with high-end digital skills that lead directly to professional success and career growth.&quot;</p>
+           <div className="lg:w-2/3 space-y-8">
+              <div className="inline-block px-4 py-1 bg-orange-100 text-brand-primary rounded-full font-black text-xs uppercase tracking-widest shadow-sm">Director&apos;s Message</div>
+              <h2 className="text-4xl lg:text-5xl font-black text-zinc-900 leading-tight">FREE Demo Class & Special Discount for 2026 Batch!</h2>
+              <div className="relative">
+                <span className="absolute -top-6 -left-4 text-8xl text-zinc-100 font-serif pointer-events-none select-none">&ldquo;</span>
+                <p className="text-xl text-zinc-700 font-bold leading-relaxed italic relative z-10">
+                  Our mission is to empower every student with high-end digital skills that lead directly to professional success and career growth. We focus on practical education that matters in the real world.
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                   <div className="w-12 h-0.5 bg-brand-primary rounded-full" />
+                   <span className="font-black text-zinc-900 text-lg">Girraj Sharma Sir</span>
+                </div>
+              </div>
               
               <div className="grid grid-cols-2 gap-4 pt-4">
                  <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
