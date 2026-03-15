@@ -19,9 +19,9 @@ const tools = [
     icon: <Languages className="text-orange-500" size={24} />,
     items: [
       { name: "Hindi Typing", href: "/typing/hindi", desc: "Type in English to get Hindi text" },
-      { name: "Marathi Typing", href: "#", desc: "Phonetic Marathi typing tool" },
-      { name: "Punjabi Typing", href: "#", desc: "Simple Panjabi typing software" },
-      { name: "Tamil Typing", href: "#", desc: "Online Tamil typing tool" },
+      { name: "Marathi Typing", href: "/typing/marathi", desc: "Phonetic Marathi typing tool" },
+      { name: "Punjabi Typing", href: "/typing/punjabi", desc: "Simple Panjabi typing software" },
+      { name: "Tamil Typing", href: "/typing/tamil", desc: "Online Tamil typing tool" },
     ]
   },
   {
@@ -38,8 +38,8 @@ const tools = [
     category: "Tutor & Keyboards",
     icon: <Keyboard className="text-green-500" size={24} />,
     items: [
-      { name: "Hindi Typing Tutor", href: "#", desc: "Step-by-step Hindi learning" },
-      { name: "English Typing Tutor", href: "#", desc: "56 Lessons for beginners" },
+      { name: "Hindi Typing Tutor", href: "/tutor/hindi", desc: "Step-by-step Hindi learning" },
+      { name: "English Typing Tutor", href: "/tutor/english", desc: "56 Lessons for beginners" },
       { name: "Virtual Hindi Keyboard", href: "/keyboard/hindi", desc: "Type using mouse or keys" },
       { name: "All Online Keyboards", href: "/keyboard", desc: "100+ language keyboards" },
     ]
@@ -49,9 +49,9 @@ const tools = [
     icon: <RefreshCcw className="text-purple-500" size={24} />,
     items: [
       { name: "KrutiDev to Unicode", href: "/converter/krutidev-to-unicode", desc: "Universal font conversion" },
-      { name: "Unicode to KrutiDev", href: "#", desc: "Web content to Kruti Dev" },
-      { name: "Typing Tank Game", href: "#", desc: "Destroy tanks by typing words" },
-      { name: "Download Fonts", href: "#", desc: "KrutiDev, Mangal, Asees" },
+      { name: "Unicode to KrutiDev", href: "/converter/unicode-to-krutidev", desc: "Web content to Kruti Dev" },
+      { name: "Typing Tank Game", href: "/games/tank-war", desc: "Destroy tanks by typing words" },
+      { name: "Download Fonts", href: "/download", desc: "KrutiDev, Mangal, Asees" },
     ]
   }
 ];

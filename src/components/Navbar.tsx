@@ -25,8 +25,8 @@ const navItems = [
     dropdown: [
       { name: "Hindi Typing", href: "/typing/hindi" },
       { name: "English Typing", href: "/typing/english" },
-      { name: "Punjabi Typing", href: "#" },
-      { name: "Marathi Typing", href: "#" },
+      { name: "Punjabi Typing", href: "/typing/punjabi" },
+      { name: "Marathi Typing", href: "/typing/marathi" },
     ]
   },
   {
@@ -42,8 +42,8 @@ const navItems = [
     name: "Tutor",
     icon: <BookOpen size={18} />,
     dropdown: [
-      { name: "Hindi Tutor", href: "#" },
-      { name: "English Tutor", href: "#" },
+      { name: "Hindi Tutor", href: "/tutor/hindi" },
+      { name: "English Tutor", href: "/tutor/english" },
     ]
   },
   {
@@ -59,8 +59,8 @@ const navItems = [
     name: "Game",
     icon: <Gamepad2 size={18} />,
     dropdown: [
-      { name: "Typing Tank War", href: "#" },
-      { name: "Word Rush", href: "#" },
+      { name: "Typing Tank War", href: "/games/tank-war" },
+      { name: "Word Rush", href: "/games/word-rush" },
     ]
   },
   {
@@ -69,7 +69,7 @@ const navItems = [
     dropdown: [
       { name: "KrutiDev to Unicode", href: "/converter/krutidev-to-unicode" },
       { name: "Unicode to KrutiDev", href: "/converter/unicode-to-krutidev" },
-      { name: "Mangal to KrutiDev", href: "#" },
+      { name: "All Online Converters", href: "/converter/index" },
     ]
   },
   {
