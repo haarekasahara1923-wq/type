@@ -139,7 +139,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
           <div>
             <h2 className="text-3xl font-black text-zinc-900 tracking-tight">Our Professional Courses</h2>
-            <p className="text-zinc-500 mt-2 font-medium italic">"Shape Your Future With Digital Skills"</p>
+            <p className="text-zinc-500 mt-2 font-medium italic">&quot;Shape Your Future With Digital Skills&quot;</p>
           </div>
         </div>
 
@@ -171,6 +171,7 @@ export default function Home() {
         <div className="mt-20 flex flex-col lg:flex-row items-center gap-12 bg-white rounded-[48px] p-8 lg:p-12 border border-zinc-200 shadow-xl">
            <div className="lg:w-1/3 relative">
              <div className="w-full aspect-square bg-zinc-100 rounded-[40px] overflow-hidden border-8 border-white shadow-2xl skew-y-3">
+               {/* eslint-disable-next-line @next/next/no-img-element */}
                <img 
                  src="https://emax.wapiflow.site/girraj-sir.jpg" 
                  alt="Girraj Sharma Sir"
@@ -188,7 +189,7 @@ export default function Home() {
            <div className="lg:w-2/3 space-y-6">
               <div className="inline-block p-2 bg-orange-50 text-brand-primary rounded-xl font-black text-xs uppercase tracking-tighter">Limited Time Offer</div>
               <h2 className="text-4xl font-black text-zinc-900 leading-tight">FREE Demo Class & Special Discount for First 50 Students!</h2>
-              <p className="text-lg text-zinc-600 font-medium leading-relaxed italic">"Our mission is to empower every student with high-end digital skills that lead directly to professional success and career growth."</p>
+              <p className="text-lg text-zinc-600 font-medium leading-relaxed italic">&quot;Our mission is to empower every student with high-end digital skills that lead directly to professional success and career growth.&quot;</p>
               
               <div className="grid grid-cols-2 gap-4 pt-4">
                  <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 flex items-center gap-3">
