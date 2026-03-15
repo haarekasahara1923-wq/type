@@ -14,9 +14,12 @@ import {
   Download,
   Menu,
   X,
-  Languages
+  Languages,
+  UserCircle,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession, signOut } from "next-auth/react";
 interface NavItem {
   name: string;
   icon: JSX.Element;
@@ -90,6 +93,7 @@ export default function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const { data: session } = useSession();
 
   // Flatten all sub-items for searching
   const searchableItems: { name: string; href: string; parent: string | null }[] = [];
@@ -208,13 +212,41 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <Link 
-              href="/admin" 
-              className="p-2 text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 rounded-full transition-colors"
-              title="Admin Panel"
-            >
-              <Monitor size={20} />
-            </Link>
+            </div>
+            
+            {session ? (
+              <div className="flex items-center gap-3">
+                {session.user?.role === "admin" && (
+                  <Link 
+                    href="/admin" 
+                    className="p-2 text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 rounded-full transition-colors"
+                    title="Admin Panel"
+                  >
+                    <Monitor size={20} />
+                  </Link>
+                )}
+                <div className="flex items-center gap-2 pl-4 border-l border-zinc-200">
+                   <div className="flex items-center gap-2 text-sm font-bold text-zinc-700">
+                     <UserCircle size={20} className="text-brand-primary" />
+                     <span className="max-w-[100px] truncate">{session.user?.name || "Student"}</span>
+                   </div>
+                   <button 
+                     onClick={() => signOut()}
+                     className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors ml-2"
+                     title="Sign Out"
+                   >
+                     <LogOut size={18} />
+                   </button>
+                </div>
+              </div>
+            ) : (
+              <Link 
+                href="/auth/login"
+                className="px-6 py-2 bg-brand-primary text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -261,6 +293,53 @@ export default function Navbar() {
               )}
             </div>
           ))}
+          ))}
+          
+          <div className="mt-6 pt-4 border-t border-zinc-100">
+             {session ? (
+                <>
+                  <div className="flex items-center gap-3 px-3 py-2 text-zinc-800 font-bold">
+                    <UserCircle size={24} className="text-brand-primary" />
+                    {session.user?.name}
+                  </div>
+                  {session.user?.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      className="block px-3 py-3 text-base font-bold text-zinc-700 hover:text-brand-primary hover:bg-zinc-50 rounded-md mt-2 flex items-center gap-2"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Monitor size={20} /> Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      signOut();
+                      setIsOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-3 text-base font-bold text-red-500 hover:bg-red-50 rounded-md mt-2 flex items-center gap-2"
+                  >
+                    <LogOut size={20} /> Sign Out
+                  </button>
+                </>
+             ) : (
+                <div className="space-y-3 mt-4">
+                  <Link
+                    href="/auth/login"
+                    className="flex justify-center w-full px-4 py-3 bg-zinc-100 text-zinc-800 font-bold rounded-xl"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    className="flex justify-center w-full px-4 py-3 bg-brand-primary text-white font-bold rounded-xl shadow-lg shadow-orange-500/20"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Create Account
+                  </Link>
+                </div>
+             )}
+          </div>
         </div>
       )}
     </nav>

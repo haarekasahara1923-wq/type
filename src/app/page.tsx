@@ -171,7 +171,7 @@ export default function Home() {
         </div>
 
         {/* Courses Grid from Ad Creative */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-24">
           {[
             { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", icon: <TrendingUp className="text-blue-600" />, bgColor: "bg-blue-50" },
             { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", icon: <FileText className="text-orange-600" />, bgColor: "bg-orange-50" },

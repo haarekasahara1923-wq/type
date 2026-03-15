@@ -23,14 +23,16 @@ model Institute {
 }
 
 model Student {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
-  email       String   @unique
+  email       String    @unique
   password    String
-  instituteId String
-  institute   Institute @relation(fields: [instituteId], references: [id])
+  contact     String?
+  whatsapp    String?
+  instituteId String?
+  institute   Institute? @relation(fields: [instituteId], references: [id])
   results     TypingResult[]
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 }
 
 model TypingParagraph {
