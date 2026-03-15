@@ -19,7 +19,8 @@ import {
   CheckCircle2,
   Phone,
   MessageSquare,
-  ShieldCheck
+  ShieldCheck,
+  X
 } from "lucide-react";
 
 const tools = [
@@ -65,7 +66,31 @@ const tools = [
   }
 ];
 
+import { useState } from "react";
+ 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    whatsapp: "",
+    contact: "",
+    email: ""
+  });
+
+  const handleEnrol = (courseTitle: string) => {
+    setSelectedCourse(courseTitle);
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const message = `*New Course Enquiry*\n\n*Student Name:* ${formData.name}\n*Course:* ${selectedCourse || "General Inquiry"}\n*WhatsApp:* ${formData.whatsapp}\n*Contact:* ${formData.contact}\n*Email:* ${formData.email}`;
+    const whatsappUrl = `https://wa.me/917999453467?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="bg-zinc-50 min-h-screen">
       {/* Hero Section */}
@@ -164,31 +189,34 @@ export default function Home() {
                </div>
                <h3 className="text-2xl font-black text-zinc-900 mb-4 group-hover:text-brand-primary transition-colors">{course.title}</h3>
                <p className="text-zinc-600 text-base font-medium leading-relaxed">{course.desc}</p>
-               <div className="mt-8 pt-6 border-t border-zinc-100 w-full flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Enrolment Open</span>
-                  <ArrowRight size={18} className="text-brand-primary" />
-               </div>
+                <button 
+                  onClick={() => handleEnrol(course.title)}
+                  className="mt-8 pt-6 border-t border-zinc-100 w-full flex items-center justify-between group-hover:border-brand-primary transition-colors"
+                >
+                  <span className="text-sm font-bold text-brand-primary uppercase tracking-widest">Enrolment Open</span>
+                  <ArrowRight size={18} className="text-brand-primary transition-transform group-hover:translate-x-1" />
+                </button>
             </div>
           ))}
         </div>
 
         {/* Director Profile Section */}
         <div className="mt-20 flex flex-col lg:flex-row items-center gap-12 bg-white rounded-[48px] p-8 lg:p-12 border border-zinc-200 shadow-xl">
-           <div className="lg:w-1/3 relative">
-             <div className="w-full aspect-square bg-zinc-100 rounded-[40px] overflow-hidden border-8 border-white shadow-2xl skew-y-3">
+            <div className="lg:w-1/3">
+             <div className="w-full aspect-[4/5] bg-zinc-100 rounded-[32px] overflow-hidden border-4 border-white shadow-2xl relative">
                {/* eslint-disable-next-line @next/next/no-img-element */}
                <img 
                  src="https://emax.wapiflow.site/girraj-sir.jpg" 
                  alt="Girraj Sharma Sir"
-                 className="w-full h-full object-cover -skew-y-3 scale-110"
+                 className="w-full h-full object-cover"
                  onError={(e) => {
                    (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Girraj+Sharma&background=000&color=fff&size=512";
                  }}
                />
-             </div>
-             <div className="absolute -bottom-4 -left-4 bg-zinc-900 text-white p-6 rounded-3xl shadow-2xl">
-                <p className="text-xs font-black uppercase tracking-widest text-orange-400 mb-1">Director</p>
-                <h4 className="text-xl font-bold">Girraj Sharma Sir</h4>
+               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
+                  <p className="text-xs font-black uppercase tracking-widest text-orange-400 mb-1">Director</p>
+                  <h4 className="text-xl font-bold text-white uppercase tracking-tighter">Girraj Sharma Sir</h4>
+               </div>
              </div>
            </div>
            <div className="lg:w-2/3 space-y-8">
@@ -332,6 +360,89 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* Floating WhatsApp Button */}
+      <button 
+        onClick={() => handleEnrol("Quick Inquiry")}
+        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-3 group"
+      >
+        <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 font-bold">Enquire on WhatsApp</span>
+        <MessageSquare size={24} fill="currentColor" />
+      </button>
+
+      {/* Enrolment Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[40px] w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+            <div className="bg-zinc-900 p-8 text-white relative">
+               <button 
+                 onClick={() => setIsModalOpen(false)}
+                 className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"
+               >
+                 <X size={24} />
+               </button>
+               <h3 className="text-2xl font-black mb-1">Course Enrolment</h3>
+               <p className="text-orange-400 font-bold uppercase tracking-widest text-xs">
+                 {selectedCourse ? `Interested in ${selectedCourse}` : "Get in Touch"}
+               </p>
+            </div>
+            <form onSubmit={handleSubmit} className="p-8 space-y-5">
+               <div className="space-y-1">
+                 <label className="text-xs font-black uppercase text-zinc-400 ml-1">Student Full Name</label>
+                 <input 
+                   required
+                   type="text"
+                   placeholder="Enter your name"
+                   className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                   value={formData.name}
+                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                 />
+               </div>
+               <div className="grid grid-cols-2 gap-4">
+                 <div className="space-y-1">
+                   <label className="text-xs font-black uppercase text-zinc-400 ml-1">WhatsApp No.</label>
+                   <input 
+                     required
+                     type="tel"
+                     placeholder="WhatsApp No"
+                     className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                     value={formData.whatsapp}
+                     onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                   />
+                 </div>
+                 <div className="space-y-1">
+                   <label className="text-xs font-black uppercase text-zinc-400 ml-1">Contact No.</label>
+                   <input 
+                     required
+                     type="tel"
+                     placeholder="Phone Number"
+                     className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                     value={formData.contact}
+                     onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                   />
+                 </div>
+               </div>
+               <div className="space-y-1">
+                 <label className="text-xs font-black uppercase text-zinc-400 ml-1">Email Address</label>
+                 <input 
+                   required
+                   type="email"
+                   placeholder="example@mail.com"
+                   className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                   value={formData.email}
+                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                 />
+               </div>
+               <button 
+                 type="submit"
+                 className="w-full bg-brand-primary hover:bg-orange-600 text-white p-5 rounded-2xl font-black text-lg shadow-xl shadow-orange-500/20 transition-all active:scale-95 flex items-center justify-center gap-3"
+               >
+                 Submit Inquiry <ArrowRight size={20} />
+               </button>
+               <p className="text-center text-xs text-zinc-400 font-medium">After clicking submit, you will be redirected to WhatsApp.</p>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
