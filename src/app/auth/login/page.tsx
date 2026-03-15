@@ -34,7 +34,7 @@ function LoginForm() {
         router.push("/");
         router.refresh(); // Refresh to update navbar state
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
