@@ -37,3 +37,23 @@ export async function generateParagraph(language: string, difficulty: string) {
     return response.choices[0]?.message?.content || "";
   }
 }
+
+/**
+ * OpenAI Text-to-Speech for Dictation Mode
+ * Converts the paragraph into a high-quality audio stream for the user to listen and type.
+ */
+export async function getDictationAudio(text: string) {
+  try {
+    const mp3 = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "nova", // nova, shimmer, echo, onyx are available
+      input: text,
+    });
+
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    return buffer;
+  } catch (error) {
+    console.error("OpenAI TTS Error:", error);
+    return null;
+  }
+}
