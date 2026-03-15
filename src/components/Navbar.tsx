@@ -5,7 +5,6 @@ import { useState } from "react";
 import { 
   Keyboard, 
   ChevronDown, 
-  Search, 
   Monitor, 
   BookOpen, 
   FileText, 
@@ -91,37 +90,20 @@ const navItems: NavItem[] = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const { data: session, status } = useSession();
-
-  // Flatten all sub-items for searching
-  const searchableItems: { name: string; href: string; parent: string | null }[] = [];
-  navItems.forEach(item => {
-    if (item.dropdown) {
-      item.dropdown.forEach(sub => {
-        searchableItems.push({ name: sub.name, href: sub.href, parent: item.name });
-      });
-    } else {
-      searchableItems.push({ name: item.name, href: item.href || "#", parent: null });
-    }
-  });
-
-  const filteredResults = searchableItems.filter(item => 
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ).slice(0, 5);
 
   return (
     <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+        <div className="flex items-center h-16 gap-4">
+          
+          {/* Logo - flex-shrink-0 so it never gets squished */}
+          <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-10 h-10 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/20">
                 EM
               </div>
-              <div className="flex flex-col">
+              <div className="hidden xl:flex flex-col">
                 <span className="text-[18px] font-black tracking-tighter text-[#000000] leading-none uppercase whitespace-nowrap">
                   Emax
                 </span>
@@ -132,8 +114,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          {/* Desktop Navigation - takes available space */}
+          <div className="hidden lg:flex items-center space-x-0 flex-1">
             {navItems.map((item) => (
               <div 
                 key={item.name} 
@@ -142,7 +124,7 @@ export default function Navbar() {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 {item.dropdown ? (
-                  <button className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-brand-primary transition-colors hover:bg-zinc-50 rounded-md">
+                  <button className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-zinc-700 hover:text-brand-primary transition-colors hover:bg-zinc-50 rounded-md whitespace-nowrap">
                     {item.icon}
                     {item.name}
                     <ChevronDown size={14} className={cn("transition-transform", activeDropdown === item.name && "rotate-180")} />
@@ -150,7 +132,7 @@ export default function Navbar() {
                 ) : (
                   <Link 
                     href={item.href || "#"} 
-                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-brand-primary transition-colors hover:bg-zinc-50 rounded-md"
+                    className="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-zinc-700 hover:text-brand-primary transition-colors hover:bg-zinc-50 rounded-md whitespace-nowrap"
                   >
                     {item.icon}
                     {item.name}
@@ -158,7 +140,7 @@ export default function Navbar() {
                 )}
 
                 {item.dropdown && activeDropdown === item.name && (
-                  <div className="absolute left-0 mt-0 w-56 bg-white border border-zinc-200 rounded-lg shadow-xl py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                  <div className="absolute left-0 top-full mt-1 w-52 bg-white border border-zinc-200 rounded-lg shadow-xl py-2 z-50">
                     {item.dropdown.map((subItem) => (
                       <Link
                         key={subItem.name}
@@ -174,49 +156,12 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right Side - Search & Actions */}
-          <div className="hidden lg:flex items-center gap-4">
-            <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Search tools..." 
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setShowSearchResults(e.target.value.length > 0);
-                }}
-                onFocus={() => searchQuery.length > 0 && setShowSearchResults(true)}
-                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
-                className="pl-10 pr-4 py-2 bg-zinc-100 border-none rounded-full text-sm focus:ring-2 focus:ring-brand-primary/50 w-48 transition-all focus:w-64 outline-none"
-              />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
-              
-              {/* Search Results Dropdown */}
-              {showSearchResults && filteredResults.length > 0 && (
-                <div className="absolute right-0 mt-3 w-64 bg-white border border-zinc-200 rounded-2xl shadow-2xl py-3 z-[100] animate-in fade-in zoom-in-95 duration-200">
-                  <div className="px-4 py-1 text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">Search Results</div>
-                  {filteredResults.map((result, idx) => (
-                    <Link
-                      key={idx}
-                      href={result.href}
-                      className="block px-4 py-2 hover:bg-zinc-50 group"
-                      onClick={() => {
-                        setSearchQuery("");
-                        setShowSearchResults(false);
-                      }}
-                    >
-                      <div className="text-sm font-bold text-zinc-800 group-hover:text-brand-primary">{result.name}</div>
-                      {result.parent && <div className="text-[10px] text-zinc-400 uppercase font-black">{result.parent}</div>}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            
+          {/* Right Side Auth - flex-shrink-0 so it never gets hidden */}
+          <div className="hidden lg:flex items-center gap-2 flex-shrink-0 ml-auto">
             {status === "loading" ? (
-              <div className="w-24 h-8 bg-zinc-100 rounded-full animate-pulse" />
+              <div className="w-20 h-8 bg-zinc-100 rounded-full animate-pulse" />
             ) : session ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 {session.user?.role === "admin" && (
                   <Link 
                     href="/admin/dashboard" 
@@ -228,31 +173,30 @@ export default function Navbar() {
                 )}
                 <div className="flex items-center gap-2 pl-3 border-l border-zinc-200">
                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-700">
-                     <UserCircle size={20} className="text-brand-primary" />
-                     <span className="max-w-[130px] truncate">Hello, {session.user?.name?.split(" ")[0] || "Student"}</span>
+                     <UserCircle size={20} className="text-brand-primary flex-shrink-0" />
+                     <span className="max-w-[100px] truncate">Hello, {session.user?.name?.split(" ")[0] || "Student"}</span>
                    </div>
                    <button 
                      onClick={() => signOut({ callbackUrl: "/" })}
-                     className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-1"
-                     title="Sign Out"
+                     className="flex items-center gap-1 px-3 py-2 text-sm font-bold text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                    >
                      <LogOut size={16} /> Sign Out
                    </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link 
                   href="/auth/login"
-                  className="px-5 py-2 text-zinc-600 hover:text-brand-primary text-sm font-bold transition-colors"
+                  className="px-4 py-2 text-zinc-600 hover:text-brand-primary text-sm font-bold transition-colors whitespace-nowrap"
                 >
                   Sign In
                 </Link>
                 <Link 
                   href="/auth/signup"
-                  className="px-5 py-2 bg-brand-primary text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20"
+                  className="px-4 py-2 bg-brand-primary text-white text-sm font-bold rounded-full hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/20 whitespace-nowrap"
                 >
-                  Create Account
+                  Sign Up
                 </Link>
               </div>
             )}
