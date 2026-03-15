@@ -11,7 +11,8 @@ import {
   Type, 
   Maximize2,
   Minimize2,
-  Info
+  Info,
+  Volume2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
@@ -44,6 +45,16 @@ export default function DynamicTypingPage() {
     element.download = `${lang}-typing.doc`;
     document.body.appendChild(element);
     element.click();
+  };
+
+  const handleSpeak = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'hindi' ? 'hi-IN' : 'en-US';
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Sorry, your browser does not support text to speech.");
+    }
   };
 
   return (
@@ -115,6 +126,13 @@ export default function DynamicTypingPage() {
               <Printer size={16} /> Print
             </button>
             <button 
+              onClick={handleSpeak}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-xl text-sm font-bold transition-all"
+              title="Dictation - Read Text Aloud"
+            >
+              <Volume2 size={16} /> Dictation
+            </button>
+            <button 
               onClick={handleClear}
               className="flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-sm font-bold transition-all"
             >
@@ -138,7 +156,7 @@ export default function DynamicTypingPage() {
             )}
           />
           <div className="absolute bottom-4 right-4 text-xs font-bold text-zinc-300 uppercase tracking-widest pointer-events-none">
-            Powered by TypingBaba Engine
+            Powered by E-Max Engine
           </div>
         </div>
 

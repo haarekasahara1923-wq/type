@@ -91,13 +91,13 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-10 h-10 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/20">
-                TB
+                EM
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-extrabold tracking-tight text-zinc-900 leading-none">
-                  Typing<span className="text-brand-primary">Baba</span>
+                  E-Max<span className="text-brand-primary"> Education</span>
                 </span>
-                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Master Your Speed</span>
+                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Computer Education Center</span>
               </div>
             </Link>
           </div>

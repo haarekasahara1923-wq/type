@@ -10,10 +10,10 @@ export default function Footer() {
           <div className="space-y-6">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-10 h-10 bg-brand-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                TB
+                EM
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-white leading-none">
-                Typing<span className="text-brand-primary">Baba</span>
+                E-Max<span className="text-brand-primary"> Center</span>
               </span>
             </Link>
             <p className="text-zinc-400 text-sm leading-relaxed">
@@ -65,22 +65,22 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               <li className="flex gap-3">
                 <MapPin className="text-brand-primary shrink-0" size={18} />
-                <span>Jaipur, Rajasthan, India</span>
+                <span>2nd Floor, Above Hero Agency, InFront of VRG Girls College, Gwalior(MP)-474006</span>
               </li>
               <li className="flex gap-3">
                 <Phone className="text-brand-primary shrink-0" size={18} />
-                <span>+91 1234 567 890</span>
+                <span>+91 7999453467</span>
               </li>
               <li className="flex gap-3">
                 <Mail className="text-brand-primary shrink-0" size={18} />
-                <span>support@typingbaba.com</span>
+                <span>support@emax.wapiflow.site</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium uppercase tracking-widest text-zinc-500">
-          <p>© {new Date().getFullYear()} Typing Baba. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} E-Max Computer Education Center. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
