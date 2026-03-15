@@ -227,7 +227,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-2 pl-4 border-l border-zinc-200">
                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-700">
                      <UserCircle size={20} className="text-brand-primary" />
-                     <span className="max-w-[100px] truncate">{session.user?.name || "Student"}</span>
+                     <span className="max-w-[150px] truncate">Hello, {session.user?.name || "Student"}</span>
                    </div>
                    <button 
                      onClick={() => signOut()}
@@ -256,8 +256,22 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex lg:hidden items-center">
+          {/* Mobile menu button and User Actions */}
+          <div className="flex lg:hidden items-center gap-2">
+            {session ? (
+              <div className="flex items-center gap-2 mr-2">
+                <span className="text-sm font-bold text-zinc-700 max-w-[100px] truncate">
+                  Hi, {session.user?.name?.split(" ")[0] || "Student"}
+                </span>
+              </div>
+            ) : (
+              <Link 
+                href="/auth/login"
+                className="px-4 py-1.5 bg-brand-primary text-white text-xs font-bold rounded-full mr-1"
+              >
+                Sign In
+              </Link>
+            )}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 rounded-md text-zinc-500 hover:text-brand-primary hover:bg-zinc-100 focus:outline-none"
@@ -306,7 +320,7 @@ export default function Navbar() {
                 <>
                   <div className="flex items-center gap-3 px-3 py-2 text-zinc-800 font-bold">
                     <UserCircle size={24} className="text-brand-primary" />
-                    {session.user?.name}
+                    Hello, {session.user?.name || "Student"}
                   </div>
                   {session.user?.role === "admin" && (
                     <Link
