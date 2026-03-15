@@ -12,7 +12,10 @@ import {
   Maximize2,
   Minimize2,
   Info,
-  Volume2
+  Volume2,
+  Brain,
+  Pause,
+  Play
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +23,9 @@ export default function HindiTypingPage() {
   const [text, setText] = useState("");
   const [fontSize, setFontSize] = useState(18);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [practiceText, setPracticeText] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCopy = () => {
@@ -42,13 +48,32 @@ export default function HindiTypingPage() {
     element.click();
   };
 
-  const handleSpeak = () => {
+  const handleSpeak = (content: string) => {
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(content);
       utterance.lang = 'hi-IN';
+      utterance.rate = 0.85;
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
       window.speechSynthesis.speak(utterance);
     } else {
-      alert("Sorry, your browser does not support text to speech.");
+      alert("Text to speech not supported.");
+    }
+  };
+
+  const handleAiGenerate = async () => {
+    setIsAiLoading(true);
+    try {
+      const response = await fetch("/api/paragraphs?language=Hindi&difficulty=Intermediate");
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setPracticeText(data[Math.floor(Math.random() * data.length)].content);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAiLoading(false);
     }
   };
 
@@ -120,11 +145,11 @@ export default function HindiTypingPage() {
               <Printer size={16} /> Print
             </button>
             <button 
-              onClick={handleSpeak}
+              onClick={() => handleSpeak(text)}
               className="flex items-center gap-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-xl text-sm font-bold transition-all"
-              title="Dictation - Read Text Aloud"
+              title="Dictation - Read Your Text"
             >
-              <Volume2 size={16} /> Dictation
+              <Volume2 size={16} /> Listen My Text
             </button>
             <button 
               onClick={handleClear}
@@ -134,6 +159,56 @@ export default function HindiTypingPage() {
             </button>
           </div>
         </div>
+
+        {/* AI Practice Panel */}
+        {!isFullScreen && (
+          <div className="mt-8 mb-4">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-[32px] p-8 shadow-2xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-8 opacity-10 text-brand-primary group-hover:scale-110 transition-transform">
+                  <Brain size={120} />
+               </div>
+               <div className="relative z-10">
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div className="space-y-1">
+                      <h2 className="text-xl font-black text-white flex items-center gap-2 uppercase tracking-tighter italic">
+                        <Brain className="text-brand-primary" size={24} />
+                        Professional Hindi Dictation Practice
+                      </h2>
+                      <p className="text-zinc-400 text-xs font-bold uppercase tracking-widest">Generate AI text & Listen while you type</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={handleAiGenerate}
+                        disabled={isAiLoading}
+                        className="flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-orange-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-500/20 disabled:opacity-50"
+                      >
+                        {isAiLoading ? "Generating..." : "Generate Practice"}
+                      </button>
+                      {practiceText && (
+                        <button 
+                          onClick={() => isSpeaking ? window.speechSynthesis.cancel() : handleSpeak(practiceText)}
+                          className="flex items-center gap-2 px-6 py-3 bg-white hover:bg-zinc-100 text-zinc-900 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg"
+                        >
+                          {isSpeaking ? <Pause size={18} /> : <Play size={18} />}
+                          {isSpeaking ? "Stop" : "Start Dictation"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {practiceText ? (
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-zinc-300 leading-relaxed max-h-40 overflow-y-auto scrollbar-hide font-mangal text-2xl text-justify">
+                      {practiceText}
+                    </div>
+                  ) : (
+                    <div className="h-24 flex items-center justify-center border-2 border-dashed border-zinc-800 rounded-2xl">
+                      <p className="text-zinc-600 text-sm font-bold uppercase tracking-[0.2em]">Click Generate to Start Practice Session</p>
+                    </div>
+                  )}
+               </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Textarea */}
         <div className="relative group">

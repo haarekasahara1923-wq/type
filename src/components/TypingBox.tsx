@@ -30,7 +30,11 @@ export default function TypingBox() {
   }, [isFinished]);
 
   useEffect(() => {
-    focusInput();
+    // Only focus after a short delay to prevent the page from jumping down on load
+    const timer = setTimeout(() => {
+      focusInput();
+    }, 500);
+    return () => clearTimeout(timer);
   }, [focusInput]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
