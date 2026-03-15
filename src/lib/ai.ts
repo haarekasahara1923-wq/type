@@ -20,6 +20,8 @@ export async function generateParagraph(language: string, difficulty: string) {
 
   try {
     console.log(`Generating ${language} paragraph via Groq...`);
+    if (!process.env.GROQ_API_KEY) throw new Error("GROQ_API_KEY is missing");
+    
     const groqResponse = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
       model: "llama-3.1-8b-instant",
@@ -29,20 +31,24 @@ export async function generateParagraph(language: string, difficulty: string) {
 
     const content = groqResponse.choices[0]?.message?.content || "";
     if (content) return content;
-    throw new Error("Empty response from Groq");
+    throw new Error("Groq returned empty content");
   } catch (error) {
-    console.error("Groq error, trying OpenAI...", error);
+    console.error("Groq fail:", error);
     
     try {
+      if (!process.env.OPEN_AI_API_KEY) throw new Error("OPEN_AI_API_KEY is missing");
+      
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini", // Faster and cheaper than 3.5-turbo
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
       });
 
-      return response.choices[0]?.message?.content || "";
+      const content = response.choices[0]?.message?.content || "";
+      if (content) return content;
+      throw new Error("OpenAI returned empty content");
     } catch (oaError) {
-      console.error("OpenAI error as well:", oaError);
-      return "";
+      console.error("AI Generation Critical Failure:", oaError);
+      throw new Error(`AI Providers failed. Groq: ${error instanceof Error ? error.message : 'Unknown'}. OpenAI: ${oaError instanceof Error ? oaError.message : 'Unknown'}`);
     }
   }
 }
