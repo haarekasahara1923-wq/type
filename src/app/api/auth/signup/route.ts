@@ -1,43 +1,60 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, contact, whatsapp, email, password } = body;
+    const { name, contact, whatsapp, email } = body;
 
-    // Validate inputs
-    if (!name || !contact || !whatsapp || !email || !password) {
+    // Validate required fields — only name & mobile are required
+    if (!name || !contact) {
       return NextResponse.json(
-        { message: 'All fields are required.' },
+        { message: 'Name aur Mobile Number zaroori hai.' },
         { status: 400 }
       );
     }
 
-    // Check if the user already exists
-    const existingUser = await prisma.student.findUnique({
-      where: { email },
+    // Mobile number must be 10 digits
+    const cleanContact = contact.trim().replace(/\D/g, '');
+    if (cleanContact.length < 10) {
+      return NextResponse.json(
+        { message: 'Sahi Mobile Number daalo (10 digit).' },
+        { status: 400 }
+      );
+    }
+
+    // Check if mobile number already registered
+    const existingByContact = await prisma.student.findUnique({
+      where: { contact: cleanContact },
     });
-
-    if (existingUser) {
+    if (existingByContact) {
       return NextResponse.json(
-        { message: 'User with this email already exists.' },
+        { message: 'Yeh Mobile Number pehle se register hai. Sign In karein.' },
         { status: 400 }
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Check email uniqueness only if email is provided
+    if (email && email.trim() !== '') {
+      const existingByEmail = await prisma.student.findUnique({
+        where: { email: email.trim().toLowerCase() },
+      });
+      if (existingByEmail) {
+        return NextResponse.json(
+          { message: 'Yeh Email pehle se register hai.' },
+          { status: 400 }
+        );
+      }
+    }
 
-    // Create user
+    // Create user — no password needed
     const newUser = await prisma.student.create({
       data: {
-        name,
-        contact,
-        whatsapp,
-        email,
-        password: hashedPassword,
+        name: name.trim(),
+        contact: cleanContact,
+        whatsapp: whatsapp?.trim() || null,
+        email: email?.trim().toLowerCase() || null,
+        password: null,
       },
     });
 
@@ -48,7 +65,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Registration Error:', error);
     return NextResponse.json(
-      { message: 'An error occurred during registration.' },
+      { message: 'Registration mein kuch problem aai. Dobara try karein.' },
       { status: 500 }
     );
   }

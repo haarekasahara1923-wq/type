@@ -3,134 +3,186 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, UserPlus } from "lucide-react";
+import { User, Smartphone, MessageCircle, Mail, ArrowRight, ShieldCheck, CheckCircle2 } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: "",
-    contact: "",
+    name:     "",
+    contact:  "",
     whatsapp: "",
-    email: "",
-    password: ""
+    email:    "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error,   setError]   = useState("");
+
+  const handleChange = (field: string, value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    if (!formData.name.trim() || !formData.contact.trim()) {
+      setError("Naam aur Mobile Number zaroori hai.");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.contact.replace(/\D/g, '').length < 10) {
+      setError("10-digit sahi Mobile Number daalo.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          name:     formData.name.trim(),
+          contact:  formData.contact.trim(),
+          whatsapp: formData.whatsapp.trim() || null,
+          email:    formData.email.trim()    || null,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
-      // Redirect to login page on success
       router.push("/auth/login?registered=true");
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Something went wrong.");
-      }
+      setError(err instanceof Error ? err.message : "Kuch problem aayi. Dobara try karein.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-zinc-50 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
-      
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-[40px] shadow-2xl relative z-10 border border-zinc-100">
-        <div>
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
-            <UserPlus className="h-8 w-8 text-brand-primary" />
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-50 via-white to-zinc-50 relative overflow-hidden">
+      {/* BG decoration */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-orange-100 rounded-full -translate-y-1/2 -translate-x-1/2 opacity-40 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-orange-50 rounded-full translate-y-1/2 translate-x-1/2 opacity-60 blur-2xl pointer-events-none" />
+
+      <div className="max-w-md w-full space-y-6 bg-white p-10 rounded-[40px] shadow-2xl relative z-10 border border-zinc-100">
+
+        {/* Header */}
+        <div className="text-center">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg shadow-orange-300/50">
+            <User className="h-10 w-10 text-white" />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-black text-zinc-900 tracking-tight">
-            Create an Account
+          <h2 className="mt-5 text-3xl font-black text-zinc-900 tracking-tight">
+            Account Banayein 🎉
           </h2>
-          <p className="mt-2 text-center text-sm text-zinc-600 font-medium">
-            Join Emax to access all our digital tools.
+          <p className="mt-2 text-sm text-zinc-500 font-medium">
+            Emax mein join karein — sirf naam aur mobile number chahiye!
           </p>
         </div>
 
+        {/* Error */}
         {error && (
           <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-medium border border-red-100 flex items-start gap-3">
-             <ShieldCheck className="shrink-0 mt-0.5" size={16} />
-             <p>{error}</p>
+            <ShieldCheck className="shrink-0 mt-0.5" size={18} />
+            <p>{error}</p>
           </div>
         )}
 
-        <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-black uppercase text-zinc-400 ml-1 mb-1">Full Name</label>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+
+          {/* Name — required */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 ml-1 mb-2">
+              Aapka Naam <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <User size={17} className="text-zinc-400" />
+              </div>
               <input
                 required
                 type="text"
-                placeholder="John Doe"
-                className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                id="signup-name"
+                placeholder="Poora naam likhein"
+                className="w-full pl-11 pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary focus:ring-2 focus:ring-orange-100 outline-none transition-all text-zinc-800 font-medium"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) => handleChange("name", e.target.value)}
               />
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-               <div>
-                  <label className="block text-xs font-black uppercase text-zinc-400 ml-1 mb-1">Contact No</label>
-                  <input
-                    required
-                    type="tel"
-                    placeholder="Mobile No"
-                    className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
-                    value={formData.contact}
-                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  />
-               </div>
-               <div>
-                  <label className="block text-xs font-black uppercase text-zinc-400 ml-1 mb-1">WhatsApp No</label>
-                  <input
-                    required
-                    type="tel"
-                    placeholder="WhatsApp No"
-                    className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
-                    value={formData.whatsapp}
-                    onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                  />
-               </div>
-            </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-black uppercase text-zinc-400 ml-1 mb-1">Email address</label>
+          {/* Mobile — required */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 ml-1 mb-2">
+              Mobile Number <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Smartphone size={17} className="text-zinc-400" />
+              </div>
               <input
                 required
+                type="tel"
+                id="signup-mobile"
+                placeholder="10-digit mobile number"
+                maxLength={10}
+                className="w-full pl-11 pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary focus:ring-2 focus:ring-orange-100 outline-none transition-all text-zinc-800 font-medium tracking-widest"
+                value={formData.contact}
+                onChange={(e) => handleChange("contact", e.target.value.replace(/\D/g, ''))}
+              />
+            </div>
+          </div>
+
+          {/* WhatsApp — optional */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 ml-1 mb-2">
+              WhatsApp Number{" "}
+              <span className="normal-case font-medium text-zinc-300">(optional)</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <MessageCircle size={17} className="text-zinc-400" />
+              </div>
+              <input
+                type="tel"
+                id="signup-whatsapp"
+                placeholder="WhatsApp number (agar alag hai)"
+                maxLength={10}
+                className="w-full pl-11 pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary focus:ring-2 focus:ring-orange-100 outline-none transition-all text-zinc-800 font-medium tracking-widest"
+                value={formData.whatsapp}
+                onChange={(e) => handleChange("whatsapp", e.target.value.replace(/\D/g, ''))}
+              />
+            </div>
+          </div>
+
+          {/* Email — optional */}
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-zinc-400 ml-1 mb-2">
+              Email Address{" "}
+              <span className="normal-case font-medium text-zinc-300">(optional)</span>
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail size={17} className="text-zinc-400" />
+              </div>
+              <input
                 type="email"
-                placeholder="name@email.com"
-                className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
+                id="signup-email"
+                placeholder="name@email.com (zaroori nahi)"
+                className="w-full pl-11 pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary focus:ring-2 focus:ring-orange-100 outline-none transition-all text-zinc-800 font-medium"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) => handleChange("email", e.target.value)}
               />
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-black uppercase text-zinc-400 ml-1 mb-1">Password</label>
-              <input
-                required
-                type="password"
-                placeholder="Create a strong password"
-                className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:border-brand-primary outline-none transition-colors"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
+          {/* Info box */}
+          <div className="bg-orange-50 border border-orange-100 rounded-2xl p-3 text-xs text-orange-700 font-medium">
+            <div className="flex items-center gap-2 mb-1.5">
+              <CheckCircle2 size={14} className="text-orange-500" />
+              <span className="font-black">Sign In kaise hoga?</span>
             </div>
+            <p>Aapka <strong>Naam</strong> + <strong>Mobile Number</strong> hi aapki identity hai — koi password yaad rakhne ki zaroorat nahi!</p>
           </div>
 
           <button
@@ -138,14 +190,23 @@ export default function SignupPage() {
             disabled={loading}
             className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-2xl shadow-xl shadow-orange-500/20 text-lg font-black text-white bg-brand-primary hover:bg-orange-600 active:scale-95 transition-all disabled:opacity-70 disabled:active:scale-100"
           >
-            {loading ? "Signing up..." : "Sign Up"}
-            {!loading && <ArrowRight size={20} />}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Account ban raha hai...
+              </span>
+            ) : (
+              <>Account Banayein <ArrowRight size={20} /></>
+            )}
           </button>
-          
+
           <p className="text-center text-sm text-zinc-500 font-medium">
-            Already have an account?{" "}
+            Pehle se account hai?{" "}
             <Link href="/auth/login" className="font-bold text-brand-primary hover:underline">
-              Log in instead
+              Sign In karein
             </Link>
           </p>
         </form>

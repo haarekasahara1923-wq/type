@@ -25,10 +25,10 @@ model Institute {
 model Student {
   id          String    @id @default(cuid())
   name        String
-  email       String    @unique
-  password    String
-  contact     String?
-  whatsapp    String?
+  contact     String    @unique   // Mobile No — used for login (required & unique)
+  whatsapp    String?             // Optional WhatsApp No
+  email       String?   @unique   // Optional email
+  password    String?             // No longer required
   instituteId String?
   institute   Institute? @relation(fields: [instituteId], references: [id])
   results     TypingResult[]
