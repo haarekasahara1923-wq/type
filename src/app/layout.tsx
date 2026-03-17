@@ -10,11 +10,17 @@ const notoHindi = Noto_Sans_Devanagari({
   variable: "--font-hindi"
 });
 
+export const viewport = {
+  themeColor: "#f97316",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "Emax Computer Education Center",
   description: "Advanced White-label Typing Practice Platform for Computer Institutes",
   manifest: "/manifest.json",
-  themeColor: "#f97316",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
