@@ -22,6 +22,7 @@ interface TypingState {
   updateMetrics: () => void;
   tick: () => void;
   reset: () => void;
+  resetStore: () => void;
 }
 
 export const useTypingStore = create<TypingState>((set, get) => ({
@@ -120,6 +121,19 @@ export const useTypingStore = create<TypingState>((set, get) => ({
 
     set({ wpm: netWpm, grossWpm, accuracy, errors: totalErrors, cpm });
   },
+
+  resetStore: () => set({
+    userInput: '',
+    isStarted: false,
+    isFinished: false,
+    timeLeft: 30 * 60,
+    startTime: null,
+    wpm: 0,
+    grossWpm: 0,
+    accuracy: 0,
+    errors: 0,
+    cpm: 0
+  }),
 
   reset: () => set({
     userInput: '',

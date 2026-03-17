@@ -10,12 +10,13 @@ const groq = new Groq({
 });
 
 export async function generateParagraph(language: string, difficulty: string) {
-  const prompt = `Generate a long typing practice paragraph in ${language} for a professional typing examination. 
+  const prompt = `Generate an EXTRA LONG typing practice paragraph in ${language} for a professional typing examination. 
   Difficulty: ${difficulty}. 
-  Length: 200-300 words. 
-  Topic: Professional workplace scenarios, computer technology, or academic literature.
-  The content must be continuous and flowing, avoiding lists or bullet points. 
-  Output ONLY the paragraph text without any headers or quotes.`;
+  Length: 350-500 words. 
+  Topic: Professional workplace scenarios, computer technology history, or academic literature.
+  The content MUST be extremely detailed, continuous, and flowing. 
+  It must be a single large block of text. Avoid any headers, lists, or quotes.
+  Output ONLY the paragraph text.`;
 
 
   try {
@@ -26,7 +27,7 @@ export async function generateParagraph(language: string, difficulty: string) {
       messages: [{ role: "user", content: prompt }],
       model: "llama-3.1-8b-instant",
       temperature: 0.7,
-      max_tokens: 1024,
+      max_tokens: 2048,
     });
 
     const content = groqResponse.choices[0]?.message?.content || "";

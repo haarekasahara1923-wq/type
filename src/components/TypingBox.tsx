@@ -25,17 +25,13 @@ export default function TypingBox() {
 
   const focusInput = useCallback(() => {
     if (inputRef.current && !isFinished) {
-      inputRef.current.focus();
+      inputRef.current.focus({ preventScroll: true });
     }
   }, [isFinished]);
 
-  useEffect(() => {
-    // Only focus after a short delay to prevent the page from jumping down on load
-    const timer = setTimeout(() => {
-      focusInput();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [focusInput]);
+  // No automatic focus on mount to prevent jumping/scrolling
+  // User will click the overlay to start
+
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isFinished) return;
