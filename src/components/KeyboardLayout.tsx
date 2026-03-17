@@ -20,19 +20,16 @@ const HINDI_LAYOUT = [
 export default function KeyboardLayout() {
   const { language, userInput, content, isFinished } = useTypingStore();
   const [isVisible, setIsVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Detect mobile to hide keyboard by default or adjust behavior
+  // Detect screen size to hide keyboard by default on mobile
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => {
       if (window.innerWidth < 1024) {
         setIsVisible(false); // Hide by default on mobile
       }
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const currentLayout = language === "English" ? ENGLISH_LAYOUT : HINDI_LAYOUT;
