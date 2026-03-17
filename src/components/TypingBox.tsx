@@ -39,28 +39,38 @@ export default function TypingBox() {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (isFinished) return;
-    // For English or non-mapped keys, handle normally. 
-    // In Hindi, we handle most character mapping via onKeyDown.
+    
+    const newVal = e.target.value;
+
     if (language === 'English') {
-      setUserInput(e.target.value);
+      setUserInput(newVal);
+      return;
+    }
+
+    // Hindi Logic (Supports Mobile and Desktop)
+    // If text was added
+    if (newVal.length > userInput.length) {
+      const addedText = newVal.slice(userInput.length);
+      let mappedText = "";
+      
+      for (const char of addedText) {
+        // Map Remington Gail keys to Hindi Unicode characters
+        mappedText += HINDI_KEY_MAP[char] || char;
+      }
+      
+      setUserInput(userInput + mappedText);
+    } else {
+      // Handles Backspace/Deletions
+      setUserInput(newVal);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (isFinished) return;
 
-    if (language === "Hindi") {
-      if (e.key === 'Backspace') {
-        e.preventDefault();
-        setUserInput(userInput.slice(0, -1));
-        return;
-      }
-
-      if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
-        e.preventDefault();
-        const mappedChar = HINDI_KEY_MAP[e.key] || e.key;
-        setUserInput(userInput + mappedChar);
-      }
+    // Prevent default scroll/behavior for certain keys if needed
+    if (e.key === 'Tab') {
+      e.preventDefault();
     }
   };
 
@@ -187,14 +197,18 @@ export default function TypingBox() {
           
           {!isFocused && !isFinished && (
             <div 
-              className="absolute inset-x-0 bottom-0 top-[45px] bg-white/60 dark:bg-black/60 backdrop-blur-[2px] z-10 flex items-center justify-center cursor-pointer"
+              className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-[1px] z-10 flex items-center justify-center cursor-pointer"
               onClick={focusInput}
+              aria-hidden="true"
             >
-              <div className="bg-white dark:bg-zinc-800 px-8 py-4 rounded-2xl shadow-2xl border border-brand-primary/20 animate-bounce flex items-center gap-3">
+              <div className="bg-white dark:bg-zinc-800 px-6 py-4 rounded-2xl shadow-2xl border border-brand-primary active:scale-95 transition-all flex items-center gap-3">
                 <div className="p-2 bg-brand-primary rounded-lg text-white">
-                   <Keyboard size={18} />
+                   <Keyboard size={20} />
                 </div>
-                <span className="text-brand-primary font-black uppercase tracking-widest text-[10px]">Click to activate Hindi Typing</span>
+                <div className="flex flex-col">
+                  <span className="text-brand-primary font-black uppercase tracking-widest text-[11px]">Click to Type</span>
+                  <span className="text-zinc-400 text-[9px] font-bold uppercase">{language} Mode Active</span>
+                </div>
               </div>
             </div>
           )}
