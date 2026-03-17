@@ -26,6 +26,9 @@ function TypingTestContent() {
   }, [langParam, setLanguage]);
 
   useEffect(() => {
+    // Scroll to top when the page loads
+    window.scrollTo(0, 0);
+    
     const fetchContent = async () => {
       setIsLoading(true);
       try {

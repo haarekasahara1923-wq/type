@@ -110,12 +110,12 @@ export default function TypingBox() {
           key={index}
           id={status === "current" ? "current-char" : undefined}
           className={cn(
-            "inline-block relative transition-all duration-75",
-            status === "typed" && "text-zinc-400 dark:text-zinc-600",
-            status === "error" && "text-red-500 bg-red-100 dark:bg-red-900/40 font-bold",
-            status === "current" && "text-brand-primary font-bold border-b-2 border-brand-primary",
-            status === "neutral" && "text-zinc-800 dark:text-zinc-200",
-            language === "Hindi" ? "font-mangal text-4xl mx-0.5 leading-[1.6]" : "font-english text-2xl"
+            "inline-block relative transition-all duration-100",
+            status === "typed" && "text-zinc-500 dark:text-zinc-400 opacity-60", // More visible typed text
+            status === "error" && "text-red-600 bg-red-50 dark:bg-red-900/30 font-bold underline decoration-wavy",
+            status === "current" && "text-brand-primary font-black border-b-[3px] border-brand-primary",
+            status === "neutral" && "text-zinc-900 dark:text-zinc-100", // Darker neutral text for better contrast
+            language === "Hindi" ? "font-mangal text-[38px] md:text-4xl mx-0.5 leading-[1.7]" : "font-english text-2xl"
           )}
         >
           {segment === " " ? "\u00A0" : segment}
@@ -131,10 +131,9 @@ export default function TypingBox() {
     if (currentChar && displayRef.current) {
       const parent = displayRef.current;
       const offset = currentChar.offsetTop;
-      if (offset > parent.scrollTop + 140) {
-        parent.scrollTo({ top: offset - 100, behavior: "smooth" });
-      } else if (offset < parent.scrollTop) {
-        parent.scrollTo({ top: offset - 100, behavior: "smooth" });
+      // Adjusted scroll buffer for mobile and desktop
+      if (offset > parent.scrollTop + 120 || offset < parent.scrollTop) {
+        parent.scrollTo({ top: offset - 80, behavior: "smooth" });
       }
     }
   }, [userInput]);
@@ -188,8 +187,8 @@ export default function TypingBox() {
             onBlur={() => setIsFocused(false)}
             placeholder={language === 'Hindi' ? "यहाँ टाइप करना शुरू करें..." : "Start typing here..."}
             className={cn(
-              "w-full h-44 p-12 bg-transparent resize-none outline-none leading-relaxed transition-all",
-              language === "Hindi" ? "font-mangal text-4xl" : "font-english text-xl text-zinc-800 dark:text-zinc-100"
+              "w-full h-44 p-8 md:p-12 bg-white dark:bg-zinc-950 resize-none outline-none leading-relaxed transition-all text-zinc-900 dark:text-zinc-50 shadow-inner",
+              language === "Hindi" ? "font-mangal text-4xl" : "font-english text-xl"
             )}
             spellCheck={false}
             disabled={isFinished}
