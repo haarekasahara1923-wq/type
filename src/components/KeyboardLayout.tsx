@@ -1,7 +1,7 @@
 "use client";
 
 import { useTypingStore } from "@/lib/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Keyboard, ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,20 @@ const HINDI_LAYOUT = [
 export default function KeyboardLayout() {
   const { language, userInput, content, isFinished } = useTypingStore();
   const [isVisible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile to hide keyboard by default or adjust behavior
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth < 1024) {
+        setIsVisible(false); // Hide by default on mobile
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const currentLayout = language === "English" ? ENGLISH_LAYOUT : HINDI_LAYOUT;
   
@@ -29,28 +43,34 @@ export default function KeyboardLayout() {
 
   return (
     <div className={cn(
-      "fixed right-0 top-1/2 -translate-y-1/2 transition-all duration-500 z-50",
+      "fixed right-0 top-1/2 -translate-y-1/2 transition-all duration-500 z-[60]",
       isVisible ? "translate-x-0" : "translate-x-[calc(100%-40px)]"
     )}>
       <div className="flex items-center">
+        {/* Toggle Button - always visible on top/side */}
         <button 
           onClick={() => setIsVisible(!isVisible)}
-          className="bg-brand-primary text-white p-2 rounded-l-xl shadow-lg hover:bg-orange-600 transition-colors"
+          className="bg-brand-primary text-white p-3 md:p-2 rounded-l-xl shadow-2xl hover:bg-orange-600 transition-colors flex items-center justify-center relative z-20"
+          title={isVisible ? "Hide Keyboard" : "Show Keyboard"}
         >
-          {isVisible ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          {isVisible ? <ChevronRight size={24} /> : <ChevronLeft size={24} />}
         </button>
 
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-l-3xl shadow-2xl min-w-[400px]">
-          <div className="flex items-center gap-2 mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-            <Keyboard className="text-brand-primary" size={20} />
-            <h3 className="font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wider text-sm">
+        {/* Keyboard Content */}
+        <div className={cn(
+          "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 rounded-l-3xl shadow-2xl transition-all duration-300",
+          "w-[300px] sm:w-[350px] md:w-[400px] lg:min-w-[400px]" // Responsive width
+        )}>
+          <div className="flex items-center gap-2 mb-4 md:mb-6 border-b border-zinc-100 dark:border-zinc-800 pb-3 md:pb-4">
+            <Keyboard className="text-brand-primary shrink-0" size={18} />
+            <h3 className="font-bold text-zinc-800 dark:text-zinc-100 uppercase tracking-wider text-[10px] md:text-xs">
               {language} Keyboard Assistant
             </h3>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 md:gap-3">
             {currentLayout.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex gap-2 justify-center">
+              <div key={rowIndex} className="flex gap-1 md:gap-2 justify-center">
                 {row.map((key) => {
                   const isNext = nextChar === key;
                   const isJustTyped = lastTypedChar === key;
@@ -59,7 +79,7 @@ export default function KeyboardLayout() {
                     <div
                       key={key}
                       className={cn(
-                        "w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-semibold transition-all duration-100 select-none",
+                        "w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center rounded-md md:rounded-lg border text-[10px] md:text-sm font-semibold transition-all duration-100 select-none",
                         isNext 
                           ? "bg-brand-primary text-white border-brand-primary scale-110 shadow-lg z-10 animate-bounce" 
                           : isJustTyped && !isFinished
@@ -74,9 +94,9 @@ export default function KeyboardLayout() {
               </div>
             ))}
             
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-2 md:mt-4 flex flex-col gap-2">
                <div className={cn(
-                 "h-10 w-full rounded-lg border flex items-center justify-center text-xs italic font-bold uppercase tracking-widest transition-all",
+                 "h-8 md:h-10 w-full rounded-md md:rounded-lg border flex items-center justify-center text-[10px] italic font-bold uppercase tracking-widest transition-all",
                  content[userInput.length] === " " 
                   ? "bg-brand-primary text-white border-brand-primary animate-pulse" 
                   : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-400"
@@ -86,11 +106,11 @@ export default function KeyboardLayout() {
             </div>
           </div>
           
-          <div className="mt-6 flex items-center justify-between text-[10px] text-zinc-400 font-bold uppercase tracking-tighter">
+          <div className="mt-4 md:mt-6 flex items-center justify-between text-[9px] md:text-[10px] text-zinc-400 font-bold uppercase tracking-tighter">
             <span>Visual Guide</span>
             <div className="flex gap-2">
                <div className="flex items-center gap-1">
-                 <div className="w-2 h-2 bg-brand-primary rounded-full" />
+                 <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-brand-primary rounded-full" />
                  <span>Next Key</span>
                </div>
             </div>
@@ -100,4 +120,3 @@ export default function KeyboardLayout() {
     </div>
   );
 }
-
