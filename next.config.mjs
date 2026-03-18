@@ -9,6 +9,42 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
     disableDevLogs: true,
+    runtimeCaching: [
+      {
+        urlPattern: /\/api\/auth\/session/,
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "next-auth-session",
+          expiration: {
+            maxEntries: 1,
+            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+          },
+        },
+      },
+
+      {
+        urlPattern: /\/api\/paragraphs/,
+        handler: "StaleWhileRevalidate",
+        options: {
+          cacheName: "api-data",
+          expiration: {
+            maxEntries: 50,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+          },
+        },
+      },
+      {
+        urlPattern: /.*/,
+        handler: "NetworkFirst",
+        options: {
+          cacheName: "others",
+          expiration: {
+            maxEntries: 100,
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+          },
+        },
+      },
+    ],
   },
 });
 
@@ -18,3 +54,4 @@ const nextConfig = {
 };
 
 export default withPWA(nextConfig);
+

@@ -1,7 +1,7 @@
 "use client";
 
-import { signIn, getSession } from "next-auth/react";
-import { useState, Suspense } from "react";
+import { signIn, getSession, useSession } from "next-auth/react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Smartphone, User, ArrowRight, ShieldAlert, CheckCircle2 } from "lucide-react";
@@ -10,11 +10,23 @@ function LoginForm() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const registered   = searchParams.get("registered");
+  const { data: session, status } = useSession();
 
   const [name,    setName]    = useState("");
   const [contact, setContact] = useState("");
   const [error,   setError]   = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect if already authenticated (handles cached sessions offline)
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      if (session.user?.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [status, session, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +35,12 @@ function LoginForm() {
 
     if (!name.trim() || !contact.trim()) {
       setError("Naam aur Mobile Number daalna zaroori hai.");
+      setLoading(false);
+      return;
+    }
+
+    if (!navigator.onLine) {
+      setError("Aap offline hain. Pehli baar login karne ke liye internet zaroori hai.");
       setLoading(false);
       return;
     }
@@ -37,10 +55,16 @@ function LoginForm() {
       if (res?.error) {
         setError("Naam ya Mobile Number galat hai. Dobara check karein.");
       } else {
-        const session = await getSession();
-        if (session?.user?.role === "admin") {
-          router.push("/admin");
-        } else {
+        // Use a more robust check after login
+        try {
+          const sessionData = await getSession();
+          if (sessionData?.user?.role === "admin") {
+            router.push("/admin");
+          } else {
+            router.push("/");
+          }
+        } catch {
+          // If getSession fails but signIn didn't, we probably have a session cookie
           router.push("/");
         }
         router.refresh();
@@ -51,6 +75,7 @@ function LoginForm() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-50 via-white to-zinc-50 relative overflow-hidden">
