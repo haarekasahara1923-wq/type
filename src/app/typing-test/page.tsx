@@ -8,17 +8,18 @@ import MetricsDisplay from "@/components/MetricsDisplay";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import ResultCard from "@/components/ResultCard";
 import LanguageToggle from "@/components/LanguageToggle";
-import { Loader2, FileText, Sparkles, RefreshCw, ArrowRight } from "lucide-react";
+import { Loader2, FileText, Sparkles, RefreshCw, ArrowRight, Clock } from "lucide-react";
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 function TypingTestContent() {
-  const { isFinished, setContent, language, setLanguage, resetStore } = useTypingStore();
+  const { isFinished, setContent, language, setLanguage, resetStore, selectedTime, setTimeLimit, isStarted } = useTypingStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
+
 
   // Fallback paragraphs (Extra Long)
   const ENGLISH_FALLBACK = "In the rapidly evolving world of digital information technology, the ability to process and communicate data quickly and accurately has become a cornerstone of professional success. Computer literacy is no longer just an additional skill but a fundamental requirement in almost every sector of the global economy. From complex data analysis to simple administrative tasks, technology integrates into our daily workflows, demanding a high level of proficiency and adaptability. Developing a strong typing speed with high accuracy allows professionals to translate their thoughts into digital form seamlessly, thereby increasing productivity and reducing cognitive strain. As we move further into the age of artificial intelligence and automated systems, the human element remains vital in guiding these tools and ensuring that the output aligns with organizational goals and ethical standards. Furthermore, the psychological benefits of mastering touch typing cannot be overstated. It fosters a sense of flow, where the barrier between the mind and the machine dissolves, enabling a purely creative output. This mastery over the primary interface of our modern age is an investment that pays dividends throughout a professional's career, ensuring they remain competitive in a fast-paced environment. Continuous practice and refinement of these skills are essential for anyone aspiring to excel in the digital landscape of the twenty-first century. Typing is not merely the act of pressing keys, but a bridge between human thought and digital realization. In today's economy, speed and accuracy are the dual engines of professional progress.";
@@ -107,7 +108,24 @@ function TypingTestContent() {
                 </div>
              </div>
 
-             <div className="flex items-center gap-2">
+             <div className="flex flex-wrap items-center gap-2">
+               {/* Time Selection Dropdown */}
+               <div className="flex items-center gap-2 bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded-xl">
+                 <Clock size={14} className="text-zinc-400" />
+                 <select 
+                   disabled={isStarted}
+                   value={Math.round(selectedTime / 60)}
+                   onChange={(e) => setTimeLimit(parseInt(e.target.value))}
+                   className="bg-transparent text-xs font-black text-zinc-700 outline-none cursor-pointer disabled:cursor-not-allowed"
+                   title="Select Test Duration"
+                 >
+                   {Array.from({ length: 60 }, (_, i) => i + 1).map(m => (
+                     <option key={m} value={m}>{m} MINUTES</option>
+                   ))}
+
+                 </select>
+               </div>
+
                <button 
                  onClick={generateNewContent}
                  disabled={isGenerating}
@@ -118,6 +136,7 @@ function TypingTestContent() {
                </button>
                <LanguageToggle />
              </div>
+
           </div>
 
           {/* Stats Bar */}

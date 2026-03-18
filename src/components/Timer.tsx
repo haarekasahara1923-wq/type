@@ -5,7 +5,7 @@ import { useTypingStore } from "@/lib/store";
 import { Timer as TimerIcon } from "lucide-react";
 
 export default function Timer() {
-  const { timeLeft, isStarted, tick, isFinished } = useTypingStore();
+  const { timeLeft, isStarted, tick, isFinished, selectedTime } = useTypingStore();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -23,7 +23,8 @@ export default function Timer() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progress = (timeLeft / (30 * 60)) * 100;
+  const progress = (timeLeft / selectedTime) * 100;
+
 
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-zinc-100 dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-inner">

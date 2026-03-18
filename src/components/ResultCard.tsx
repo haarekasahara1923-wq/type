@@ -6,7 +6,7 @@ import { CheckCircle2, RotateCcw, Share2, Award } from "lucide-react";
 import { useEffect } from "react";
 
 export default function ResultCard() {
-  const { wpm, accuracy, errors, reset, language } = useTypingStore();
+  const { wpm, accuracy, errors, reset, language, selectedTime } = useTypingStore();
 
   useEffect(() => {
     // Proactively save results to Neon database
@@ -20,7 +20,7 @@ export default function ResultCard() {
             wpm,
             accuracy,
             errors,
-            duration: 1800 // 30 mins from store logic
+            duration: selectedTime 
           })
         });
       } catch (e) {
@@ -29,7 +29,7 @@ export default function ResultCard() {
     };
 
     if (wpm > 0) saveResult();
-  }, [wpm, accuracy, errors, language]);
+  }, [wpm, accuracy, errors, language, selectedTime]);
 
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-3xl p-10 shadow-2xl border border-zinc-200 dark:border-zinc-800 max-w-2xl mx-auto overflow-hidden relative">
@@ -43,7 +43,8 @@ export default function ResultCard() {
         </div>
         
         <h1 className="text-4xl font-bold mb-2">Excellent Work!</h1>
-        <p className="text-zinc-500 mb-10">You have successfully completed the 30-minute typing examination.</p>
+        <p className="text-zinc-500 mb-10">You have successfully completed the {Math.round(selectedTime / 60)}-minute typing examination.</p>
+
         
         <div className="grid grid-cols-3 gap-8 w-full mb-10">
           <div className="text-center">

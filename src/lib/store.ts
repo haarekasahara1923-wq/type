@@ -14,6 +14,8 @@ interface TypingState {
   errors: number;
   cpm: number;
   
+  selectedTime: number; // in seconds
+  setTimeLimit: (minutes: number) => void;
   setLanguage: (lang: 'English' | 'Hindi') => void;
   setContent: (content: string) => void;
   setUserInput: (input: string) => void;
@@ -28,7 +30,8 @@ interface TypingState {
 export const useTypingStore = create<TypingState>((set, get) => ({
   language: 'English',
   startTime: null,
-  timeLeft: 30 * 60, // 30 minutes
+  selectedTime: 30 * 60, // Default 30 minutes
+  timeLeft: 30 * 60, 
   isStarted: false,
   isFinished: false,
   content: '',
@@ -39,20 +42,37 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   errors: 0,
   cpm: 0,
 
-  setLanguage: (language) => set({ language }),
-  setContent: (content) => set({ 
-    content, 
-    userInput: '', 
-    isStarted: false, 
-    isFinished: false, 
-    timeLeft: 30 * 60,
+  setTimeLimit: (minutes) => set({ 
+    selectedTime: minutes * 60, 
+    timeLeft: minutes * 60,
     startTime: null,
+    isStarted: false,
+    isFinished: false,
+    userInput: '',
     wpm: 0,
     grossWpm: 0,
     accuracy: 0,
     errors: 0,
     cpm: 0
   }),
+
+  setLanguage: (language) => set({ language }),
+  setContent: (content) => {
+    const { selectedTime } = get();
+    set({ 
+      content, 
+      userInput: '', 
+      isStarted: false, 
+      isFinished: false, 
+      timeLeft: selectedTime,
+      startTime: null,
+      wpm: 0,
+      grossWpm: 0,
+      accuracy: 0,
+      errors: 0,
+      cpm: 0
+    });
+  },
   
   setUserInput: (userInput) => {
     const state = get();
@@ -122,31 +142,38 @@ export const useTypingStore = create<TypingState>((set, get) => ({
     set({ wpm: netWpm, grossWpm, accuracy, errors: totalErrors, cpm });
   },
 
-  resetStore: () => set({
-    userInput: '',
-    isStarted: false,
-    isFinished: false,
-    timeLeft: 30 * 60,
-    startTime: null,
-    wpm: 0,
-    grossWpm: 0,
-    accuracy: 0,
-    errors: 0,
-    cpm: 0
-  }),
+  resetStore: () => {
+    const { selectedTime } = get();
+    set({
+      userInput: '',
+      isStarted: false,
+      isFinished: false,
+      timeLeft: selectedTime,
+      startTime: null,
+      wpm: 0,
+      grossWpm: 0,
+      accuracy: 0,
+      errors: 0,
+      cpm: 0
+    });
+  },
 
-  reset: () => set({
-    userInput: '',
-    isStarted: false,
-    isFinished: false,
-    timeLeft: 30 * 60,
-    startTime: null,
-    wpm: 0,
-    grossWpm: 0,
-    accuracy: 0,
-    errors: 0,
-    cpm: 0
-  })
+  reset: () => {
+    const { selectedTime } = get();
+    set({
+      userInput: '',
+      isStarted: false,
+      isFinished: false,
+      timeLeft: selectedTime,
+      startTime: null,
+      wpm: 0,
+      grossWpm: 0,
+      accuracy: 0,
+      errors: 0,
+      cpm: 0
+    });
+  }
+
 }));
 
 
