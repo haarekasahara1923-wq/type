@@ -56,7 +56,7 @@ export default function DynamicTypingPage() {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(content);
       utterance.lang = lang === 'hindi' ? 'hi-IN' : 'en-US';
-      utterance.rate = 0.9; // Slightly slower for dictation
+      utterance.rate = 0.5; // Half speed for better dictation
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
       window.speechSynthesis.speak(utterance);

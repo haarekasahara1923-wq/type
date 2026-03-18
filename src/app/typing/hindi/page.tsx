@@ -53,7 +53,7 @@ export default function HindiTypingPage() {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(content);
       utterance.lang = 'hi-IN';
-      utterance.rate = 0.85;
+      utterance.rate = 0.5;
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
       window.speechSynthesis.speak(utterance);
