@@ -71,53 +71,66 @@ export default function TypingBox() {
   };
 
 
-  // Split content into grapheme clusters for rendering (prevents Hindi matras from detaching)
+  // Split content into words and grapheme clusters for rendering
   const renderDisplayContent = () => {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     const segmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter 
       ? new (Intl as any).Segmenter(undefined, { granularity: 'grapheme' }) 
       : null;
     
-    // Convert to arrays for easy comparison
     const contentSegments = segmenter 
       ? Array.from(segmenter.segment(content)).map((s: any) => s.segment)
       : content.split("");
       
-    // For the typed text, we need to know WHICH segment we are in.
-    // However, it's safer to compare string prefixes for "typed" status.
-    
-    let currentByteIndex = 0;
+    const words: any[][] = [];
+    let currentWord: any[] = [];
+    let cumulativeIndex = 0;
 
-    return contentSegments.map((segment, index) => {
+    contentSegments.forEach((segment, index) => {
       const segmentLength = segment.length;
-      const segmentInUser = userInput.substring(currentByteIndex, currentByteIndex + segmentLength);
+      const segmentInUser = userInput.substring(cumulativeIndex, cumulativeIndex + segmentLength);
       
       let status = "neutral";
-      if (currentByteIndex < userInput.length) {
+      if (cumulativeIndex < userInput.length) {
         status = segmentInUser === segment ? "typed" : "error";
-      } else if (currentByteIndex === userInput.length) {
+      } else if (cumulativeIndex === userInput.length) {
         status = "current";
       }
-      
-      currentByteIndex += segmentLength;
 
-      return (
-        <span
-          key={index}
-          id={status === "current" ? "current-char" : undefined}
-          className={cn(
-            "inline-block relative transition-all duration-100",
-            status === "typed" && "text-zinc-500 dark:text-zinc-400 opacity-60", // More visible typed text
-            status === "error" && "text-red-600 bg-red-50 dark:bg-red-900/30 font-bold underline decoration-wavy",
-            status === "current" && "text-brand-primary font-black border-b-[3px] border-brand-primary",
-            status === "neutral" && "text-zinc-900 dark:text-zinc-100", // Darker neutral text for better contrast
-            language === "Hindi" ? "font-mangal text-[38px] md:text-4xl mx-0.5 leading-[1.7]" : "font-english text-2xl"
-          )}
-        >
-          {segment === " " ? "\u00A0" : segment}
-        </span>
-      );
+      currentWord.push({ segment, status, index, cumulativeIndex });
+      cumulativeIndex += segmentLength;
+
+      // Group by whitespace
+      if (segment === " " || segment === "\n" || segment === "\t") {
+        words.push(currentWord);
+        currentWord = [];
+      }
     });
+    
+    if (currentWord.length > 0) {
+      words.push(currentWord);
+    }
+
+    return words.map((word, wordIndex) => (
+      <span key={`word-${wordIndex}`} className="inline-block whitespace-nowrap">
+        {word.map((charObj) => (
+          <span
+            key={charObj.index}
+            id={charObj.status === "current" ? "current-char" : undefined}
+            className={cn(
+              "inline-block relative transition-all duration-100",
+              charObj.status === "typed" && "text-zinc-500 dark:text-zinc-400 opacity-60",
+              charObj.status === "error" && "text-red-600 bg-red-50 dark:bg-red-900/30 font-bold underline decoration-wavy",
+              charObj.status === "current" && "text-brand-primary font-black border-b-[3px] border-brand-primary",
+              charObj.status === "neutral" && "text-zinc-900 dark:text-zinc-100",
+              language === "Hindi" ? "font-mangal text-[38px] md:text-3xl leading-[1.6]" : "font-english text-2xl"
+            )}
+          >
+            {charObj.segment === " " ? "\u00A0" : charObj.segment}
+          </span>
+        ))}
+      </span>
+    ));
     /* eslint-enable @typescript-eslint/no-explicit-any */
   };
 
@@ -127,7 +140,6 @@ export default function TypingBox() {
     if (currentChar && displayRef.current) {
       const parent = displayRef.current;
       const offset = currentChar.offsetTop;
-      // Adjusted scroll buffer for mobile and desktop
       if (offset > parent.scrollTop + 120 || offset < parent.scrollTop) {
         parent.scrollTo({ top: offset - 80, behavior: "smooth" });
       }
@@ -149,10 +161,11 @@ export default function TypingBox() {
           </div>
           <div 
             ref={displayRef}
-            className="h-64 overflow-y-auto p-12 select-none text-justify scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
+            className="h-64 overflow-y-auto p-12 select-none text-left scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
           >
             {renderDisplayContent()}
           </div>
+
         </div>
       </div>
 

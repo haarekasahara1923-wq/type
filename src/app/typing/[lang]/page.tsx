@@ -220,7 +220,7 @@ export default function DynamicTypingPage() {
                   {practiceText ? (
                     <div className={cn(
                       "bg-white/5 border border-white/10 rounded-2xl p-6 text-zinc-300 leading-relaxed max-h-40 overflow-y-auto scrollbar-hide",
-                      lang === 'hindi' ? "font-mangal text-2xl text-justify" : "font-sans text-lg italic"
+                      lang === 'hindi' ? "font-mangal text-2xl text-left" : "font-sans text-lg italic text-left"
                     )}>
                       {practiceText}
                     </div>
