@@ -1,25 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { 
   Keyboard, 
   Languages, 
   Monitor, 
   FileText, 
   RefreshCcw, 
-  ArrowRight,
-  TrendingUp,
-  Award,
-  Zap,
-  GraduationCap,
-  Users,
-  Briefcase,
-  BadgeCheck,
-  CheckCircle2,
-  Phone,
-  ShieldCheck,
-  X
+  ArrowRight, 
+  TrendingUp, 
+  Award, 
+  Zap, 
+  Users, 
+  Briefcase, 
+  BadgeCheck, 
+  Phone, 
+  X 
 } from "lucide-react";
 
 const tools = [
