@@ -40,19 +40,33 @@ function TypingTestContent() {
 
   const getRandomFallback = useCallback(() => {
     if (practiceType === 'beginner') {
-      return language === 'Hindi' 
-        ? "अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; " 
-        : "asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; ";
+      const chars = language === 'Hindi' ? "असदफ" : "asdf";
+      let result = "";
+      for(let i=0; i<80; i++) {
+        const chunk = chars.split('').sort(() => Math.random() - 0.5).join('');
+        result += chunk + "; ";
+      }
+      return result;
     }
     if (practiceType === 'intermediate') {
-      return language === 'Hindi'
-        ? "ककगग हहहह टटटट ककगग हहहह टटटट ककगग हहहह टटटट ककगग हहहह "
-        : "asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; ";
+      const chars = language === 'Hindi' ? "कगहट" : "asdfghjkl";
+      let result = "";
+      for(let i=0; i<60; i++) {
+        let chunk = "";
+        for(let j=0; j<5; j++) chunk += chars[Math.floor(Math.random() * chars.length)];
+        result += chunk + "; ";
+      }
+      return result;
     }
     if (practiceType === 'short_words') {
-      return language === 'Hindi'
-        ? "आग जग कल जल फल नल चल थल नल मल जल फल नल चल थल "
-        : "the cat sat bat fat hat mat rat bat fat hat mat rat ";
+      const words = language === 'Hindi' 
+        ? ["आग", "जग", "कल", "जल", "फल", "नल", "चल", "थल", "मल"] 
+        : ["the", "cat", "sat", "bat", "fat", "hat", "mat", "rat"];
+      let result = "";
+      for(let i=0; i<200; i++) {
+        result += words[Math.floor(Math.random() * words.length)] + " ";
+      }
+      return result;
     }
     
     // Default to professional text for long/full text
@@ -65,7 +79,13 @@ function TypingTestContent() {
     setIsGenerating(true);
     resetStore(); 
     try {
-      // If offline, use local drills immediately
+      // For drills, generate INSTANTLY locally to avoid "Ringing" and latency
+      if (practiceType !== 'full_text') {
+        setContent(getRandomFallback());
+        return;
+      }
+
+      // Only full_text uses AI
       if (!navigator.onLine) {
         setContent(getRandomFallback());
         return;
@@ -84,7 +104,6 @@ function TypingTestContent() {
         setContent(getRandomFallback());
       }
     } catch {
-       console.log("Using local offline content...");
        setContent(getRandomFallback());
     } finally {
       setIsGenerating(false);
@@ -111,14 +130,14 @@ function TypingTestContent() {
         return;
     }
 
-    setIsLoading(true);
-    try {
-      // For character drills, we always generate new to keep it fresh
-      if (practiceType !== 'full_text') {
-        await generateNewContent();
-        return;
-      }
+    // If we already have content, don't show full-screen loader to avoid "blink"
+    // Just use isGenerating overlay/button state
+    if (practiceType !== 'full_text') {
+       generateNewContent();
+       return;
+    }
 
+    try {
       const res = await fetch(`/api/paragraphs?language=${language}`);
       const data = await res.json();
       
@@ -202,7 +221,6 @@ function TypingTestContent() {
                      setPracticeType(newType);
                      setHasLoadedFromParam(true);
                      // Trigger regeneration when type changes
-                     setIsLoading(true);
                    }}
                    className="bg-transparent text-xs font-black text-brand-primary outline-none cursor-pointer disabled:cursor-not-allowed uppercase tracking-wider"
                  >
@@ -256,7 +274,17 @@ function TypingTestContent() {
           </div>
 
           {/* Typing Area */}
-          <TypingBox />
+          <div className="relative">
+            {isGenerating && (
+              <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-sm rounded-3xl flex items-center justify-center animate-in fade-in duration-300">
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="w-10 h-10 text-brand-primary animate-spin" />
+                  <p className="text-brand-primary font-black text-xs uppercase tracking-widest">Updating Practice Content...</p>
+                </div>
+              </div>
+            )}
+            <TypingBox />
+          </div>
 
           {/* Footer Actions */}
           <div className="flex flex-col items-center gap-6 py-8">
