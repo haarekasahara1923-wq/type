@@ -29,18 +29,29 @@ const HINDI_FALLBACKS = [
 ];
 
 function TypingTestContent() {
-  const { isFinished, setContent, language, setLanguage, resetStore, selectedTime, setTimeLimit, isStarted } = useTypingStore();
+  const { isFinished, setContent, language, setLanguage, resetStore, selectedTime, setTimeLimit, isStarted, practiceType, setPracticeType } = useTypingStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
+  const contentParam = searchParams.get("content");
 
 
   useEffect(() => {
     if (langParam === "Hindi" || langParam === "English") {
       setLanguage(langParam);
     }
-  }, [langParam, setLanguage]);
+    
+    if (contentParam) {
+      try {
+        const decoded = decodeURIComponent(contentParam);
+        setContent(decoded);
+        setIsLoading(false);
+      } catch (e) {
+        console.error("Failed to decode content param", e);
+      }
+    }
+  }, [langParam, contentParam, setLanguage, setContent]);
 
   const getRandomFallback = useCallback(() => {
     const fallbacks = language === 'English' ? ENGLISH_FALLBACKS : HINDI_FALLBACKS;
@@ -50,6 +61,12 @@ function TypingTestContent() {
   const fetchExistingContent = useCallback(async () => {
     setIsLoading(true);
     try {
+      // For character drills, we always generate new to keep it fresh
+      if (practiceType !== 'full_text') {
+        await generateNewContent();
+        return;
+      }
+
       const res = await fetch(`/api/paragraphs?language=${language}`);
       const data = await res.json();
       
@@ -66,21 +83,21 @@ function TypingTestContent() {
       setIsLoading(false);
       setTimeout(() => window.scrollTo(0, 0), 100);
     }
-  }, [language, setContent, getRandomFallback]);
+  }, [language, setContent, getRandomFallback, practiceType]);
 
   const generateNewContent = async () => {
     setIsGenerating(true);
     resetStore(); 
     try {
-      // If offline, skip the fetch immediately
-      if (!navigator.onLine) {
+      // If offline & full_text, use fallbacks. Else char drills rely on online for now (could be local later)
+      if (!navigator.onLine && practiceType === 'full_text') {
         throw new Error("Offline");
       }
 
       const res = await fetch('/api/paragraphs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language, difficulty: 'Intermediate' })
+        body: JSON.stringify({ language, difficulty: 'Intermediate', type: practiceType })
       });
       const data = await res.json();
       if (data && data.content) {
@@ -137,16 +154,36 @@ function TypingTestContent() {
           <div className="bg-white p-4 rounded-3xl border border-zinc-200 shadow-xl flex flex-wrap items-center justify-between gap-4 sticky top-20 z-40 md:relative md:top-0">
              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <FileText className="text-brand-primary" size={20} />
+                  <Sparkles className="text-brand-primary" size={20} />
                 </div>
                 <div>
                   <h2 className="font-black text-zinc-900 leading-tight">
-                    {language} Examination
+                    AI Content Generator
                   </h2>
                 </div>
              </div>
 
              <div className="flex flex-wrap items-center gap-2">
+               {/* Practice Type Selection */}
+               <div className="flex items-center gap-2 bg-brand-primary/5 border border-brand-primary/10 px-3 py-1.5 rounded-xl">
+                 <select 
+                   disabled={isStarted || isGenerating}
+                   value={practiceType}
+                   onChange={(e) => {
+                     setPracticeType(e.target.value as any);
+                     // Trigger regeneration when type changes
+                     setIsLoading(true);
+                   }}
+                   className="bg-transparent text-xs font-black text-brand-primary outline-none cursor-pointer disabled:cursor-not-allowed uppercase tracking-wider"
+                 >
+                   <option value="full_text">Professional Text (1000+ Words)</option>
+                   <option value="beginner">Beginner: 3-Char Drills</option>
+                   <option value="intermediate">Intermediate: 5-Char Drills</option>
+                   <option value="short_words">Advanced: Short Words</option>
+                   <option value="long_words">Expert: Large Words</option>
+                 </select>
+               </div>
+
                {/* Time Selection Dropdown */}
                <div className="flex items-center gap-2 bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded-xl">
                  <Clock size={14} className="text-zinc-400" />
@@ -170,7 +207,7 @@ function TypingTestContent() {
                  className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-xl text-xs font-black shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-95 disabled:opacity-50"
                >
                  {isGenerating ? <Loader2 size={16} className="animate-spin" /> : (isOnline ? <Sparkles size={16} /> : <RefreshCw size={16} />)}
-                 {isGenerating ? "GENERATING..." : (isOnline ? "NEW AI TEST" : "NEXT TEXT")}
+                 {isGenerating ? "GENERATING..." : (isOnline ? "GENERATE CONTENT" : "NEXT TEXT")}
                </button>
 
                <LanguageToggle />

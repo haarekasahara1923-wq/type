@@ -2,23 +2,25 @@
 
 import { BookOpen, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import { LESSONS } from "@/data/lessons";
 
 export default function DynamicTutorPage() {
   const params = useParams();
-  const lang = (params.lang as string) || "hindi";
+  const lang = ((params.lang as string) || "hindi").toLowerCase();
   const capitalLang = lang.charAt(0).toUpperCase() + lang.slice(1);
 
-  const lessons = [
-    { id: 1, title: "Home Row Basics", desc: "Learn to place your fingers correctly on the home row." },
-    { id: 2, title: "Top Row Practice", desc: "Training for the upper row keys (QWERTY)." },
-    { id: 3, title: "Bottom Row Discovery", desc: "Mastering the lower part of the keyboard." },
-    { id: 4, title: "Shift Key & Symbols", desc: "Working with capital letters and special characters." },
-  ];
+  // Fallback to English if lang is not found
+  const tutorId = lang === 'hindi' || lang === 'english' ? lang : 'english';
+  const displayLessons = LESSONS[tutorId as keyof typeof LESSONS];
 
   return (
     <div className="bg-zinc-50 min-h-screen pb-20 pt-10">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-12 space-y-4">
+          <Link href="/" className="text-zinc-400 hover:text-brand-primary text-xs font-black uppercase tracking-widest flex items-center gap-2 mb-6 transition-colors">
+            <ArrowRight className="rotate-180" size={14} /> Back to Home
+          </Link>
           <h1 className="text-4xl font-black text-zinc-900 flex items-center gap-4">
             <div className="p-3 bg-brand-primary rounded-2xl text-white shadow-lg">
               <BookOpen size={32} />
@@ -31,22 +33,25 @@ export default function DynamicTutorPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {lessons.map((lesson) => (
+          {displayLessons.map((lesson) => (
             <div 
               key={lesson.id} 
-              className="bg-white border border-zinc-200 p-6 rounded-[32px] hover:border-brand-primary group transition-all"
+              className="bg-white border border-zinc-200 p-8 rounded-[40px] hover:border-brand-primary group transition-all shadow-sm hover:shadow-xl"
             >
-               <div className="flex justify-between items-center mb-4">
-                  <span className="text-xs font-black text-brand-primary uppercase tracking-widest bg-orange-50 px-3 py-1 rounded-full">
+               <div className="flex justify-between items-center mb-6">
+                  <span className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] bg-orange-50 px-4 py-1.5 rounded-full">
                     Lesson {lesson.id}
                   </span>
                   {lesson.id === 1 && <CheckCircle2 className="text-green-500" size={20} />}
                </div>
-               <h3 className="text-xl font-bold text-zinc-900 group-hover:text-brand-primary transition-colors mb-2">{lesson.title}</h3>
-               <p className="text-zinc-500 text-sm mb-6 leading-relaxed">{lesson.desc}</p>
-               <button className="w-full py-3 bg-zinc-900 text-white rounded-xl font-bold flex items-center justify-center gap-2 group-hover:bg-brand-primary transition-all">
-                 Start Learning <ArrowRight size={18} />
-               </button>
+               <h3 className="text-2xl font-black text-zinc-900 group-hover:text-brand-primary transition-colors mb-2">{lesson.title}</h3>
+               <p className="text-zinc-500 text-sm mb-8 leading-relaxed font-medium">{lesson.desc}</p>
+               <Link 
+                  href={`/typing-test?lang=${capitalLang}&content=${encodeURIComponent(lesson.content)}`}
+                  className="w-full py-4 bg-zinc-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 group-hover:bg-brand-primary transition-all shadow-lg active:scale-95"
+               >
+                 Start Lesson <ArrowRight size={18} />
+               </Link>
             </div>
           ))}
         </div>

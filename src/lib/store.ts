@@ -15,8 +15,10 @@ interface TypingState {
   cpm: number;
   
   selectedTime: number; // in seconds
+  practiceType: 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
   setTimeLimit: (minutes: number) => void;
   setLanguage: (lang: 'English' | 'Hindi') => void;
+  setPracticeType: (type: 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text') => void;
   setContent: (content: string) => void;
   setUserInput: (input: string) => void;
   startTest: () => void;
@@ -29,6 +31,7 @@ interface TypingState {
 
 export const useTypingStore = create<TypingState>((set, get) => ({
   language: 'English',
+  practiceType: 'full_text',
   startTime: null,
   selectedTime: 30 * 60, // Default 30 minutes
   timeLeft: 30 * 60, 
@@ -42,6 +45,7 @@ export const useTypingStore = create<TypingState>((set, get) => ({
   errors: 0,
   cpm: 0,
 
+  setPracticeType: (practiceType) => set({ practiceType }),
   setTimeLimit: (minutes) => set({ 
     selectedTime: minutes * 60, 
     timeLeft: minutes * 60,

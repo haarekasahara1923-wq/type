@@ -4,9 +4,9 @@ import { generateParagraph } from "@/lib/ai";
 
 export async function POST(req: Request) {
   try {
-    const { language, difficulty } = await req.json();
+    const { language, difficulty, type } = await req.json();
 
-    const content = await generateParagraph(language, difficulty);
+    const content = await generateParagraph(language, difficulty, type);
 
     if (!content) {
       return NextResponse.json({ error: "Failed to generate paragraph" }, { status: 500 });
