@@ -8,7 +8,7 @@ import MetricsDisplay from "@/components/MetricsDisplay";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import ResultCard from "@/components/ResultCard";
 import LanguageToggle from "@/components/LanguageToggle";
-import { Loader2, FileText, Sparkles, RefreshCw, ArrowRight, Clock } from "lucide-react";
+import { Loader2, Sparkles, RefreshCw, ArrowRight, Clock } from "lucide-react";
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -58,34 +58,7 @@ function TypingTestContent() {
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   }, [language]);
 
-  const fetchExistingContent = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      // For character drills, we always generate new to keep it fresh
-      if (practiceType !== 'full_text') {
-        await generateNewContent();
-        return;
-      }
-
-      const res = await fetch(`/api/paragraphs?language=${language}`);
-      const data = await res.json();
-      
-      if (data && data.length > 0) {
-        const randomIndex = Math.floor(Math.random() * data.length);
-        setContent(data[randomIndex].content);
-      } else {
-        setContent(getRandomFallback());
-      }
-    } catch (error) {
-      console.error("Failed to fetch content", error);
-      setContent(getRandomFallback());
-    } finally {
-      setIsLoading(false);
-      setTimeout(() => window.scrollTo(0, 0), 100);
-    }
-  }, [language, setContent, getRandomFallback, practiceType]);
-
-  const generateNewContent = async () => {
+  const generateNewContent = useCallback(async () => {
     setIsGenerating(true);
     resetStore(); 
     try {
@@ -113,7 +86,35 @@ function TypingTestContent() {
 
       setIsGenerating(false);
     }
-  };
+  }, [language, practiceType, resetStore, setContent, getRandomFallback]);
+
+
+  const fetchExistingContent = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // For character drills, we always generate new to keep it fresh
+      if (practiceType !== 'full_text') {
+        await generateNewContent();
+        return;
+      }
+
+      const res = await fetch(`/api/paragraphs?language=${language}`);
+      const data = await res.json();
+      
+      if (data && data.length > 0) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        setContent(data[randomIndex].content);
+      } else {
+        setContent(getRandomFallback());
+      }
+    } catch (error) {
+      console.error("Failed to fetch content", error);
+      setContent(getRandomFallback());
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => window.scrollTo(0, 0), 100);
+    }
+  }, [language, setContent, getRandomFallback, practiceType, generateNewContent]);
 
 
   useEffect(() => {
@@ -170,7 +171,7 @@ function TypingTestContent() {
                    disabled={isStarted || isGenerating}
                    value={practiceType}
                    onChange={(e) => {
-                     setPracticeType(e.target.value as any);
+                     setPracticeType(e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text');
                      // Trigger regeneration when type changes
                      setIsLoading(true);
                    }}
