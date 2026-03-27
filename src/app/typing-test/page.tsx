@@ -198,21 +198,24 @@ function TypingTestContent() {
         <div className="space-y-8 animate-in fade-in duration-500">
           
           {/* Main Controls Overlay for AI/Language (Pinned better for Mobile) */}
-          <div className="bg-white p-4 rounded-3xl border border-zinc-200 shadow-xl flex flex-wrap items-center justify-between gap-4 sticky top-20 z-40 md:relative md:top-0">
-             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <Sparkles className="text-brand-primary" size={20} />
+          <div className="bg-white p-4 md:p-6 rounded-[32px] border border-zinc-200 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6 sticky top-20 z-40 md:relative md:top-0">
+             <div className="flex items-center gap-4 w-full lg:w-auto">
+                <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center shrink-0">
+                  <Sparkles className="text-brand-primary" size={24} />
                 </div>
                 <div>
-                  <h2 className="font-black text-zinc-900 leading-tight">
+                  <h2 className="font-black text-zinc-900 text-lg leading-tight">
                     AI Content Generator
                   </h2>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Customize Your Training</p>
                 </div>
              </div>
 
-             <div className="flex flex-wrap items-center gap-2">
+             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+               
                {/* Practice Type Selection */}
-               <div className="flex items-center gap-2 bg-brand-primary/5 border border-brand-primary/10 px-3 py-1.5 rounded-xl">
+               <div className="flex-1 min-w-[200px] flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm">
+                 <div className="text-[10px] font-black text-zinc-400 uppercase tracking-wider whitespace-nowrap border-r border-zinc-200 pr-2 mr-1">Level</div>
                  <select 
                    disabled={isStarted || isGenerating}
                    value={practiceType}
@@ -220,9 +223,8 @@ function TypingTestContent() {
                      const newType = e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
                      setPracticeType(newType);
                      setHasLoadedFromParam(true);
-                     // Trigger regeneration when type changes
                    }}
-                   className="bg-transparent text-xs font-black text-brand-primary outline-none cursor-pointer disabled:cursor-not-allowed uppercase tracking-wider"
+                   className="bg-transparent text-sm font-black text-zinc-800 outline-none cursor-pointer disabled:cursor-not-allowed w-full"
                  >
                    <option value="full_text">Professional Text (1000+ Words)</option>
                    <option value="beginner">Beginner: 3-Char Drills</option>
@@ -233,32 +235,32 @@ function TypingTestContent() {
                </div>
 
                {/* Time Selection Dropdown */}
-               <div className="flex items-center gap-2 bg-zinc-100 border border-zinc-200 px-3 py-1.5 rounded-xl">
-                 <Clock size={14} className="text-zinc-400" />
+               <div className="flex-1 min-w-[140px] flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm">
+                 <Clock size={16} className="text-zinc-400 shrink-0" />
                  <select 
                    disabled={isStarted}
                    value={Math.round(selectedTime / 60)}
                    onChange={(e) => setTimeLimit(parseInt(e.target.value))}
-                   className="bg-transparent text-xs font-black text-zinc-700 outline-none cursor-pointer disabled:cursor-not-allowed"
-                   title="Select Test Duration"
+                   className="bg-transparent text-sm font-black text-zinc-800 outline-none cursor-pointer disabled:cursor-not-allowed w-full"
                  >
                    {Array.from({ length: 60 }, (_, i) => i + 1).map(m => (
                      <option key={m} value={m}>{m} MINUTES</option>
                    ))}
-
                  </select>
                </div>
 
-               <button 
-                 onClick={generateNewContent}
-                 disabled={isGenerating}
-                 className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-white rounded-xl text-xs font-black shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-95 disabled:opacity-50"
-               >
-                 {isGenerating ? <Loader2 size={16} className="animate-spin" /> : (isOnline ? <Sparkles size={16} /> : <RefreshCw size={16} />)}
-                 {isGenerating ? "GENERATING..." : (isOnline ? "GENERATE CONTENT" : "NEXT TEXT")}
-               </button>
+               <div className="flex items-center gap-2">
+                 <button 
+                   onClick={generateNewContent}
+                   disabled={isGenerating}
+                   className="flex-1 sm:flex-initial flex items-center justify-center gap-3 px-6 py-3 bg-brand-primary text-white rounded-2xl text-xs font-black shadow-lg shadow-orange-500/25 hover:bg-orange-600 transition-all active:scale-95 disabled:opacity-50 uppercase tracking-widest min-w-[160px]"
+                 >
+                   {isGenerating ? <Loader2 size={18} className="animate-spin" /> : (isOnline ? <Sparkles size={18} /> : <RefreshCw size={18} />)}
+                   {isGenerating ? "GENERATING..." : (isOnline ? "NEW CONTENT" : "NEXT TEXT")}
+                 </button>
 
-               <LanguageToggle />
+                 <LanguageToggle />
+               </div>
              </div>
 
           </div>
