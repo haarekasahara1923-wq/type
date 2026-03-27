@@ -32,26 +32,11 @@ function TypingTestContent() {
   const { isFinished, setContent, language, setLanguage, resetStore, selectedTime, setTimeLimit, isStarted, practiceType, setPracticeType } = useTypingStore();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [hasLoadedFromParam, setHasLoadedFromParam] = useState(false);
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
   const contentParam = searchParams.get("content");
 
-
-  useEffect(() => {
-    if (langParam === "Hindi" || langParam === "English") {
-      setLanguage(langParam);
-    }
-    
-    if (contentParam) {
-      try {
-        const decoded = decodeURIComponent(contentParam);
-        setContent(decoded);
-        setIsLoading(false);
-      } catch (e) {
-        console.error("Failed to decode content param", e);
-      }
-    }
-  }, [langParam, contentParam, setLanguage, setContent]);
 
   const getRandomFallback = useCallback(() => {
     const fallbacks = language === 'English' ? ENGLISH_FALLBACKS : HINDI_FALLBACKS;
@@ -59,6 +44,7 @@ function TypingTestContent() {
   }, [language]);
 
   const generateNewContent = useCallback(async () => {
+    setHasLoadedFromParam(true);
     setIsGenerating(true);
     resetStore(); 
     try {
@@ -83,13 +69,25 @@ function TypingTestContent() {
        console.log("Using local offline content...");
        setContent(getRandomFallback());
     } finally {
-
       setIsGenerating(false);
+      setIsLoading(false);
     }
   }, [language, practiceType, resetStore, setContent, getRandomFallback]);
 
-
   const fetchExistingContent = useCallback(async () => {
+    // If we have content from URL (Tutor Lesson) and haven't loaded it yet, use it once
+    if (contentParam && !hasLoadedFromParam) {
+      setHasLoadedFromParam(true);
+      setIsLoading(false);
+       try {
+        const decoded = decodeURIComponent(contentParam);
+        setContent(decoded);
+      } catch (e) {
+        console.error("Failed to decode content param", e);
+      }
+      return;
+    }
+
     setIsLoading(true);
     try {
       // For character drills, we always generate new to keep it fresh
@@ -114,8 +112,14 @@ function TypingTestContent() {
       setIsLoading(false);
       setTimeout(() => window.scrollTo(0, 0), 100);
     }
-  }, [language, setContent, getRandomFallback, practiceType, generateNewContent]);
+  }, [language, setContent, getRandomFallback, practiceType, generateNewContent, contentParam, hasLoadedFromParam]);
 
+
+  useEffect(() => {
+    if (langParam === "Hindi" || langParam === "English") {
+      setLanguage(langParam);
+    }
+  }, [langParam, setLanguage]);
 
   useEffect(() => {
     // Disable automatic scroll restoration to fix jumping
@@ -171,7 +175,9 @@ function TypingTestContent() {
                    disabled={isStarted || isGenerating}
                    value={practiceType}
                    onChange={(e) => {
-                     setPracticeType(e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text');
+                     const newType = e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
+                     setPracticeType(newType);
+                     setHasLoadedFromParam(true);
                      // Trigger regeneration when type changes
                      setIsLoading(true);
                    }}
