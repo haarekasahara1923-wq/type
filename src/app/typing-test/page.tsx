@@ -213,28 +213,40 @@ function TypingTestContent() {
 
              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
                
-               {/* Practice Type Selection */}
-               <div className="flex-1 min-w-[240px] flex items-center bg-brand-primary/10 border border-brand-primary/20 px-4 py-3 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm group">
-                 <div className="flex items-center gap-2 w-full">
-                    <div className="text-[10px] font-black text-brand-primary uppercase tracking-widest whitespace-nowrap border-r border-brand-primary/30 pr-3 mr-1">
-                      Drill
-                    </div>
-                    <select 
-                      disabled={isStarted || isGenerating}
-                      value={practiceType}
-                      onChange={(e) => {
-                        const newType = e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
-                        setPracticeType(newType);
-                        setHasLoadedFromParam(true);
-                      }}
-                      className="bg-transparent text-sm font-black text-brand-primary outline-none cursor-pointer disabled:cursor-not-allowed w-full appearance-none pr-4"
-                    >
-                      <option value="full_text" className="text-zinc-900">Professional Text (1000w)</option>
-                      <option value="beginner" className="text-zinc-900">3-Char Drills (Beginner)</option>
-                      <option value="intermediate" className="text-zinc-900">5-Char Drills (Medium)</option>
-                      <option value="short_words" className="text-zinc-900">Short Words (Advanced)</option>
-                      <option value="long_words" className="text-zinc-900">Large Words (Expert)</option>
-                    </select>
+               {/* Custom Select Drill Dropdown */}
+               <div className="relative flex-1 min-w-[180px]">
+                 <button 
+                   disabled={isStarted || isGenerating}
+                   onClick={() => (document.getElementById('drill-menu') as any)?.classList.toggle('hidden')}
+                   className="w-full flex items-center justify-between bg-brand-primary text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 active:scale-95 transition-all disabled:opacity-50"
+                 >
+                   SELECT DRILL
+                   <ArrowRight className="rotate-90" size={14} />
+                 </button>
+                 
+                 <div 
+                   id="drill-menu" 
+                   className="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 duration-200"
+                 >
+                   {[
+                     { id: 'full_text', label: 'Professional Text (1000w)' },
+                     { id: 'beginner', label: '3-Char Drills (Beginner)' },
+                     { id: 'intermediate', label: '5-Char Drills (Medium)' },
+                     { id: 'short_words', label: 'Short Words (Advanced)' },
+                     { id: 'long_words', label: 'Large Words (Expert)' },
+                   ].map((opt) => (
+                     <button
+                       key={opt.id}
+                       onClick={() => {
+                         setPracticeType(opt.id as any);
+                         setHasLoadedFromParam(true);
+                         (document.getElementById('drill-menu') as any)?.classList.add('hidden');
+                       }}
+                       className={`w-full text-left px-5 py-4 text-xs font-bold hover:bg-orange-50 transition-colors border-b border-zinc-100 last:border-0 ${practiceType === opt.id ? 'text-brand-primary bg-orange-50' : 'text-zinc-600'}`}
+                     >
+                       {opt.label}
+                     </button>
+                   ))}
                  </div>
                </div>
 
