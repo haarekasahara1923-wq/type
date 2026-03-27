@@ -214,24 +214,28 @@ function TypingTestContent() {
              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
                
                {/* Practice Type Selection */}
-               <div className="flex-1 min-w-[220px] flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm">
-                 <div className="text-[10px] font-black text-zinc-400 uppercase tracking-wider whitespace-nowrap border-r border-zinc-200 pr-2 mr-1">Select Drill</div>
-                 <select 
-                   disabled={isStarted || isGenerating}
-                   value={practiceType}
-                   onChange={(e) => {
-                     const newType = e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
-                     setPracticeType(newType);
-                     setHasLoadedFromParam(true);
-                   }}
-                   className="bg-transparent text-sm font-black text-zinc-800 outline-none cursor-pointer disabled:cursor-not-allowed w-full"
-                 >
-                   <option value="full_text">Professional Text (1000w)</option>
-                   <option value="beginner">3-Char Drills (Beginner)</option>
-                   <option value="intermediate">5-Char Drills (Medium)</option>
-                   <option value="short_words">Short Words (Advanced)</option>
-                   <option value="long_words">Large Words (Expert)</option>
-                 </select>
+               <div className="flex-1 min-w-[240px] flex items-center bg-brand-primary/10 border border-brand-primary/20 px-4 py-3 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm group">
+                 <div className="flex items-center gap-2 w-full">
+                    <div className="text-[10px] font-black text-brand-primary uppercase tracking-widest whitespace-nowrap border-r border-brand-primary/30 pr-3 mr-1">
+                      Drill
+                    </div>
+                    <select 
+                      disabled={isStarted || isGenerating}
+                      value={practiceType}
+                      onChange={(e) => {
+                        const newType = e.target.value as 'beginner' | 'intermediate' | 'short_words' | 'long_words' | 'full_text';
+                        setPracticeType(newType);
+                        setHasLoadedFromParam(true);
+                      }}
+                      className="bg-transparent text-sm font-black text-brand-primary outline-none cursor-pointer disabled:cursor-not-allowed w-full appearance-none pr-4"
+                    >
+                      <option value="full_text" className="text-zinc-900">Professional Text (1000w)</option>
+                      <option value="beginner" className="text-zinc-900">3-Char Drills (Beginner)</option>
+                      <option value="intermediate" className="text-zinc-900">5-Char Drills (Medium)</option>
+                      <option value="short_words" className="text-zinc-900">Short Words (Advanced)</option>
+                      <option value="long_words" className="text-zinc-900">Large Words (Expert)</option>
+                    </select>
+                 </div>
                </div>
 
                {/* Time Selection Dropdown */}
