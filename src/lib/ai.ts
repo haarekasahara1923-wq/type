@@ -14,32 +14,32 @@ export async function generateParagraph(language: string, difficulty: string, ty
   
   if (type === "beginner") {
     prompt = `Generate a sequence of ${language === 'Hindi' ? 'Hindi Mangal characters' : 'characters'} for a BEGINNER typing drill. 
-    Format: 3 characters followed by a semicolon and space. Repeat this pattern for about 100-150 groups. 
+    Format: 3 characters followed by a semicolon and space. Repeat this pattern for exactly 500 groups to provide enough practice material. 
     Examples: ${language === 'Hindi' ? 'कखग; कखग; कखग; ' : 'asd; asd; asd; '}. 
     Focus on home row keys if possible. 
     Output ONLY the characters.`;
   } else if (type === "intermediate") {
     prompt = `Generate a sequence of 5-6 random characters (not necessarily words) for an INTERMEDIATE typing drill in ${language}. 
-    Format: 5-6 characters followed by a semicolon and space. Repeat for 100 groups. 
+    Format: 5-6 characters followed by a semicolon and space. Repeat for exactly 500 groups. 
     Output ONLY text.`;
   } else if (type === "short_words") {
     prompt = `Generate a large block of SHORT words (2-4 characters) in ${language} for typing practice. 
-    Words must be simple and common. Repeat and mix them for about 400-500 words total. 
+    Words must be simple and common. Repeat and mix them for exactly 1500 words total. 
     Output ONLY text.`;
   } else if (type === "long_words") {
     prompt = `Generate a large block of MEDIUM to LONG words (5-8 characters) in ${language} for advanced typing practice. 
-    Repeat and mix them for about 400-500 words total. 
+    Repeat and mix them for exactly 1500 words total. 
     Output ONLY text.`;
   } else {
     // Full text - multi subject
     const subjects = ["History of World", "Modern Politics", "Inspirational Stories", "Scientific Discoveries", "Global Economy", "Environmental Conservation", "Classical Literature"];
     const subject = subjects[Math.floor(Math.random() * subjects.length)];
     
-    prompt = `Generate a VERY LONG (around 1000 words) typing practice text in ${language}. 
+    prompt = `Generate a VERY LONG (at least 1500 words) typing practice text in ${language}. 
     Topic: ${subject}. 
     Tone: Engaging and professional. 
     Format: Continuous flowing text without paragraph breaks, headers, or lists. 
-    Strictness: MUST be around 1000 words. 
+    Strictness: MUST be at least 1500 words. 
     Output ONLY the text.`;
   }
 

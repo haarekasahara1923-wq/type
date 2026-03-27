@@ -43,7 +43,7 @@ function TypingTestContent() {
     if (practiceType === 'beginner') {
       const chars = language === 'Hindi' ? "असदफ" : "asdf";
       let result = "";
-      for(let i=0; i<80; i++) {
+      for(let i=0; i<500; i++) {
         const chunk = chars.split('').sort(() => Math.random() - 0.5).join('');
         result += chunk + "; ";
       }
@@ -52,7 +52,7 @@ function TypingTestContent() {
     if (practiceType === 'intermediate') {
       const chars = language === 'Hindi' ? "कगहट" : "asdfghjkl";
       let result = "";
-      for(let i=0; i<60; i++) {
+      for(let i=0; i<500; i++) {
         let chunk = "";
         for(let j=0; j<5; j++) chunk += chars[Math.floor(Math.random() * chars.length)];
         result += chunk + "; ";
@@ -61,10 +61,20 @@ function TypingTestContent() {
     }
     if (practiceType === 'short_words') {
       const words = language === 'Hindi' 
-        ? ["आग", "जग", "कल", "जल", "फल", "नल", "चल", "थल", "मल"] 
-        : ["the", "cat", "sat", "bat", "fat", "hat", "mat", "rat"];
+        ? ["आग", "जग", "कल", "जल", "फल", "नल", "चल", "थल", "मल", "नल", "जल"] 
+        : ["the", "cat", "sat", "bat", "fat", "hat", "mat", "rat", "sun", "hot"];
       let result = "";
-      for(let i=0; i<200; i++) {
+      for(let i=0; i<500; i++) {
+        result += words[Math.floor(Math.random() * words.length)] + " ";
+      }
+      return result;
+    }
+    if (practiceType === 'long_words') {
+      const words = language === 'Hindi' 
+        ? ["भारत", "कंप्यूटर", "प्रौद्योगिकी", "अर्थव्यवस्था", "स्वतंत्रता", "संस्कृति", "विकास"] 
+        : ["computer", "technology", "economy", "independence", "culture", "information", "practice"];
+      let result = "";
+      for(let i=0; i<500; i++) {
         result += words[Math.floor(Math.random() * words.length)] + " ";
       }
       return result;
@@ -118,7 +128,12 @@ function TypingTestContent() {
       setHasLoadedFromParam(true);
       try {
         const decoded = decodeURIComponent(contentParam);
-        setContent(decoded);
+        // If content is a short drill, repeat it 500 times as requested
+        let finalContent = decoded;
+        if (decoded.length < 200) {
+           finalContent = Array(500).fill(decoded).join(" ").trim();
+        }
+        setContent(finalContent);
         setIsLoading(false);
       } catch (e) {
         console.error("Failed to decode content param", e);
