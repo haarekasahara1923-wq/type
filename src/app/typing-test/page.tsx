@@ -214,8 +214,8 @@ function TypingTestContent() {
              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
                
                {/* Practice Type Selection */}
-               <div className="flex-1 min-w-[200px] flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm">
-                 <div className="text-[10px] font-black text-zinc-400 uppercase tracking-wider whitespace-nowrap border-r border-zinc-200 pr-2 mr-1">Level</div>
+               <div className="flex-1 min-w-[220px] flex items-center gap-2 bg-zinc-50 border border-zinc-200 px-4 py-2.5 rounded-2xl focus-within:border-brand-primary transition-all shadow-sm">
+                 <div className="text-[10px] font-black text-zinc-400 uppercase tracking-wider whitespace-nowrap border-r border-zinc-200 pr-2 mr-1">Select Drill</div>
                  <select 
                    disabled={isStarted || isGenerating}
                    value={practiceType}
@@ -226,11 +226,11 @@ function TypingTestContent() {
                    }}
                    className="bg-transparent text-sm font-black text-zinc-800 outline-none cursor-pointer disabled:cursor-not-allowed w-full"
                  >
-                   <option value="full_text">Professional Text (1000+ Words)</option>
-                   <option value="beginner">Beginner: 3-Char Drills</option>
-                   <option value="intermediate">Intermediate: 5-Char Drills</option>
-                   <option value="short_words">Advanced: Short Words</option>
-                   <option value="long_words">Expert: Large Words</option>
+                   <option value="full_text">Professional Text (1000w)</option>
+                   <option value="beginner">3-Char Drills (Beginner)</option>
+                   <option value="intermediate">5-Char Drills (Medium)</option>
+                   <option value="short_words">Short Words (Advanced)</option>
+                   <option value="long_words">Large Words (Expert)</option>
                  </select>
                </div>
 
