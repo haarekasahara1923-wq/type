@@ -39,18 +39,36 @@ function TypingTestContent() {
 
 
   const getRandomFallback = useCallback(() => {
+    if (practiceType === 'beginner') {
+      return language === 'Hindi' 
+        ? "अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; अ स द फ ; " 
+        : "asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; asdf; ";
+    }
+    if (practiceType === 'intermediate') {
+      return language === 'Hindi'
+        ? "ककगग हहहह टटटट ककगग हहहह टटटट ककगग हहहह टटटट ककगग हहहह "
+        : "asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; asdfg; hjkl; ";
+    }
+    if (practiceType === 'short_words') {
+      return language === 'Hindi'
+        ? "आग जग कल जल फल नल चल थल नल मल जल फल नल चल थल "
+        : "the cat sat bat fat hat mat rat bat fat hat mat rat ";
+    }
+    
+    // Default to professional text for long/full text
     const fallbacks = language === 'English' ? ENGLISH_FALLBACKS : HINDI_FALLBACKS;
     return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-  }, [language]);
+  }, [language, practiceType]);
 
   const generateNewContent = useCallback(async () => {
     setHasLoadedFromParam(true);
     setIsGenerating(true);
     resetStore(); 
     try {
-      // If offline & full_text, use fallbacks. Else char drills rely on online for now (could be local later)
-      if (!navigator.onLine && practiceType === 'full_text') {
-        throw new Error("Offline");
+      // If offline, use local drills immediately
+      if (!navigator.onLine) {
+        setContent(getRandomFallback());
+        return;
       }
 
       const res = await fetch('/api/paragraphs', {
@@ -75,17 +93,22 @@ function TypingTestContent() {
   }, [language, practiceType, resetStore, setContent, getRandomFallback]);
 
   const fetchExistingContent = useCallback(async () => {
-    // If we have content from URL (Tutor Lesson) and haven't loaded it yet, use it once
+    // 1. Priority: URL Param (Tutor Lesson)
     if (contentParam && !hasLoadedFromParam) {
       setHasLoadedFromParam(true);
-      setIsLoading(false);
-       try {
+      try {
         const decoded = decodeURIComponent(contentParam);
         setContent(decoded);
+        setIsLoading(false);
       } catch (e) {
         console.error("Failed to decode content param", e);
       }
       return;
+    }
+
+    // 2. If we just loaded from param, DON'T run random fetch immediately after re-render
+    if (hasLoadedFromParam && !isGenerating && contentParam) {
+        return;
     }
 
     setIsLoading(true);
@@ -112,7 +135,7 @@ function TypingTestContent() {
       setIsLoading(false);
       setTimeout(() => window.scrollTo(0, 0), 100);
     }
-  }, [language, setContent, getRandomFallback, practiceType, generateNewContent, contentParam, hasLoadedFromParam]);
+  }, [language, setContent, getRandomFallback, practiceType, generateNewContent, contentParam, hasLoadedFromParam, isGenerating]);
 
 
   useEffect(() => {
