@@ -33,6 +33,7 @@ function TypingTestContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasLoadedFromParam, setHasLoadedFromParam] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
   const contentParam = searchParams.get("content");
@@ -217,37 +218,39 @@ function TypingTestContent() {
                <div className="relative flex-1 min-w-[180px]">
                  <button 
                    disabled={isStarted || isGenerating}
-                   onClick={() => (document.getElementById('drill-menu') as any)?.classList.toggle('hidden')}
+                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                    className="w-full flex items-center justify-between bg-brand-primary text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-orange-500/20 active:scale-95 transition-all disabled:opacity-50"
                  >
                    SELECT DRILL
-                   <ArrowRight className="rotate-90" size={14} />
+                   <ArrowRight className={`transition-transform duration-200 ${isMenuOpen ? 'rotate-[270deg]' : 'rotate-90'}`} size={14} />
                  </button>
                  
-                 <div 
-                   id="drill-menu" 
-                   className="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 duration-200"
-                 >
-                   {[
-                     { id: 'full_text', label: 'Professional Text (1000w)' },
-                     { id: 'beginner', label: '3-Char Drills (Beginner)' },
-                     { id: 'intermediate', label: '5-Char Drills (Medium)' },
-                     { id: 'short_words', label: 'Short Words (Advanced)' },
-                     { id: 'long_words', label: 'Large Words (Expert)' },
-                   ].map((opt) => (
-                     <button
-                       key={opt.id}
-                       onClick={() => {
-                         setPracticeType(opt.id as any);
-                         setHasLoadedFromParam(true);
-                         (document.getElementById('drill-menu') as any)?.classList.add('hidden');
-                       }}
-                       className={`w-full text-left px-5 py-4 text-xs font-bold hover:bg-orange-50 transition-colors border-b border-zinc-100 last:border-0 ${practiceType === opt.id ? 'text-brand-primary bg-orange-50' : 'text-zinc-600'}`}
-                     >
-                       {opt.label}
-                     </button>
-                   ))}
-                 </div>
+                 {isMenuOpen && (
+                   <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                     {(['full_text', 'beginner', 'intermediate', 'short_words', 'long_words'] as const).map((id) => {
+                       const labels = {
+                         full_text: 'Professional Text (1000w)',
+                         beginner: '3-Char Drills (Beginner)',
+                         intermediate: '5-Char Drills (Medium)',
+                         short_words: 'Short Words (Advanced)',
+                         long_words: 'Large Words (Expert)'
+                       };
+                       return (
+                         <button
+                           key={id}
+                           onClick={() => {
+                             setPracticeType(id);
+                             setHasLoadedFromParam(true);
+                             setIsMenuOpen(false);
+                           }}
+                           className={`w-full text-left px-5 py-4 text-xs font-bold hover:bg-orange-50 transition-colors border-b border-zinc-100 last:border-0 ${practiceType === id ? 'text-brand-primary bg-orange-50' : 'text-zinc-600'}`}
+                         >
+                           {labels[id]}
+                         </button>
+                       );
+                     })}
+                   </div>
+                 )}
                </div>
 
                {/* Time Selection Dropdown */}
