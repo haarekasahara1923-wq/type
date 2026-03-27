@@ -100,47 +100,64 @@ export default function Home() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center max-w-3xl mx-auto space-y-8">
-            <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-brand-primary px-4 py-1.5 rounded-full text-sm font-bold animate-bounce">
-              <Zap size={16} fill="currentColor" />
-              <span>Gwalior&apos;s #1 Computer Education Center</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 leading-[1.1]">
-              Master Skills at <span className="text-brand-primary">Emax Computer Education Center</span>
-            </h1>
-            
-            <p className="text-xl text-zinc-500 font-medium">
-              Free online tools for Hindi & English Typing, Speed Tests, Font Converters, and much more. Start practicing now and boost your productivity!
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link 
-                href="/typing-test?lang=English" 
-                className="bg-brand-primary hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/20 transition-all hover:-translate-y-1 flex items-center gap-2"
-              >
-                English Typing Test <ArrowRight size={20} />
-              </Link>
-              <Link 
-                href="/typing-test?lang=Hindi" 
-                className="bg-zinc-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-zinc-900/20 transition-all hover:-translate-y-1"
-              >
-                Hindi Typing Test
-              </Link>
-            </div>
-
-            <div className="flex justify-center items-center gap-8 pt-10 text-zinc-400">
-              <div className="flex items-center gap-2">
-                <TrendingUp size={20} />
-                <span className="text-sm font-bold uppercase tracking-wider">Fast Results</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-brand-primary px-4 py-1.5 rounded-full text-sm font-bold animate-bounce">
+                <Zap size={16} fill="currentColor" />
+                <span>Gwalior&apos;s #1 Computer Education Center</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Award size={20} />
-                <span className="text-sm font-bold uppercase tracking-wider">Accurate Metrics</span>
+              
+              <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-zinc-900 leading-[1.1]">
+                Master Skills at <span className="text-brand-primary">Emax Computer Education Center</span>
+              </h1>
+              
+              <p className="text-xl text-zinc-500 font-medium">
+                Free online tools for Hindi & English Typing, Speed Tests, Font Converters, and much more. Start practicing now and boost your productivity!
+              </p>
+
+              <div className="flex flex-wrap gap-4 pt-4">
+                <Link 
+                  href="/typing-test?lang=English" 
+                  className="bg-brand-primary hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/20 transition-all hover:-translate-y-1 flex items-center gap-2"
+                >
+                  English Typing Test <ArrowRight size={20} />
+                </Link>
+                <Link 
+                  href="/typing-test?lang=Hindi" 
+                  className="bg-zinc-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-zinc-900/20 transition-all hover:-translate-y-1"
+                >
+                  Hindi Typing Test
+                </Link>
               </div>
-              <div className="flex items-center gap-2">
-                <Monitor size={20} />
-                <span className="text-sm font-bold uppercase tracking-wider">Exam Ready</span>
+
+              <div className="flex items-center gap-8 pt-6 text-zinc-400">
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={20} />
+                  <span className="text-sm font-bold uppercase tracking-wider">Fast Results</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award size={20} />
+                  <span className="text-sm font-bold uppercase tracking-wider">Accurate</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Monitor size={20} />
+                  <span className="text-sm font-bold uppercase tracking-wider">Exam Ready</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-orange-500/10 rounded-[40px] blur-2xl group-hover:bg-orange-500/20 transition-colors duration-500" />
+              <div className="relative aspect-[4/3] rounded-[40px] overflow-hidden border-8 border-white shadow-2xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" 
+                  alt="Indian girl students working on computers"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-8">
+                  <p className="text-white text-lg font-bold">Practical Training Environment</p>
+                </div>
               </div>
             </div>
           </div>
@@ -170,31 +187,39 @@ export default function Home() {
         </div>
 
         {/* Courses Grid from Ad Creative */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-24">
           {[
-            { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", icon: <TrendingUp className="text-blue-600" />, bgColor: "bg-blue-50" },
-            { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", icon: <FileText className="text-orange-600" />, bgColor: "bg-orange-50" },
-            { title: "Tally Prime with GST", desc: "Master professional accounting, inventory management, and GST filing from scratch.", icon: <BadgeCheck className="text-green-600" />, bgColor: "bg-green-50" },
-            { title: "CPCT Preparation", desc: "Special batches for MP CPCT exam with focus on typing speed and theory accuracy.", icon: <GraduationCap className="text-purple-600" />, bgColor: "bg-purple-50" },
-            { title: "Job Oriented AI Courses", desc: "Stay ahead with Generative AI tools like ChatGPT, Midjourney for workplace productivity.", icon: <Zap className="text-yellow-600" />, bgColor: "bg-yellow-50" },
-            { title: "ITI Training", desc: "Technical vocational training for all trades with practical focus on employability.", icon: <Monitor className="text-zinc-700" />, bgColor: "bg-zinc-100" },
-            { title: "Digital Marketing", desc: "Join our comprehensive course on SEO, Content Marketing, and Online Strategy.", icon: <Users className="text-sky-600" />, bgColor: "bg-sky-50" },
-            { title: "Academic Degrees", desc: "Admission guidance for BBA, BCA, BTech, B.Com, MBA & MTech programs.", icon: <CheckCircle2 className="text-red-600" />, bgColor: "bg-red-50" },
-            { title: "Medical & Nursing", desc: "Enroll in DPharma, BPharma, D.Ed and other high-demand medical diplomas.", icon: <ShieldCheck className="text-teal-600" />, bgColor: "bg-teal-50" },
+            { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" },
+            { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop" },
+            { title: "Tally Prime with GST", desc: "Master professional accounting, inventory management, and GST filing from scratch.", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop" },
+            { title: "CPCT Preparation", desc: "Special batches for MP CPCT exam with focus on typing speed and theory accuracy.", image: "https://images.unsplash.com/photo-1588702547919-26089e690f9a?q=80&w=800&auto=format&fit=crop" },
+            { title: "Job Oriented AI Courses", desc: "Stay ahead with Generative AI tools like ChatGPT, Midjourney for workplace productivity.", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop" },
+            { title: "ITI Training", desc: "Technical vocational training for all trades with practical focus on employability.", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" },
+            { title: "Digital Marketing", desc: "Join our comprehensive course on SEO, Content Marketing, and Online Strategy.", image: "https://images.unsplash.com/photo-1533750516457-a7f992034fce?q=80&w=800&auto=format&fit=crop" },
+            { title: "Academic Degrees", desc: "Admission guidance for BBA, BCA, BTech, B.Com, MBA & MTech programs.", image: "https://images.unsplash.com/photo-1523050353045-832b24e9ec59?q=80&w=800&auto=format&fit=crop" },
+            { title: "Medical & Nursing", desc: "Enroll in DPharma, BPharma, D.Ed and other high-demand medical diplomas.", image: "https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=800&auto=format&fit=crop" },
           ].map((course, idx) => (
-            <div key={idx} className="p-10 bg-white border border-zinc-200 rounded-[40px] hover:border-brand-primary shadow-sm hover:shadow-2xl transition-all duration-300 group relative flex flex-col items-start text-left">
-               <div className={cn("p-4 rounded-[20px] mb-8 group-hover:scale-110 transition-transform", course.bgColor)}>
-                 {course.icon}
+            <div key={idx} className="bg-white border border-zinc-200 rounded-[32px] overflow-hidden hover:border-brand-primary shadow-sm hover:shadow-2xl transition-all duration-300 group flex flex-col">
+               <div className="h-48 overflow-hidden relative">
+                 {/* eslint-disable-next-line @next/next/no-img-element */}
+                 <img 
+                   src={course.image} 
+                   alt={course.title}
+                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                </div>
-               <h3 className="text-2xl font-black text-zinc-900 mb-4 group-hover:text-brand-primary transition-colors">{course.title}</h3>
-               <p className="text-zinc-600 text-base font-medium leading-relaxed">{course.desc}</p>
-                <button 
-                  onClick={() => handleEnrol(course.title)}
-                  className="mt-8 pt-6 border-t border-zinc-100 w-full flex items-center justify-between group-hover:border-brand-primary transition-colors"
-                >
-                  <span className="text-sm font-bold text-brand-primary uppercase tracking-widest">Enrolment Open</span>
-                  <ArrowRight size={18} className="text-brand-primary transition-transform group-hover:translate-x-1" />
-                </button>
+               <div className="p-8 flex-grow flex flex-col">
+                 <h3 className="text-xl font-black text-zinc-900 mb-3 group-hover:text-brand-primary transition-colors">{course.title}</h3>
+                 <p className="text-zinc-600 text-sm font-medium leading-relaxed mb-6 flex-grow">{course.desc}</p>
+                 <button 
+                   onClick={() => handleEnrol(course.title)}
+                   className="pt-6 border-t border-zinc-100 w-full flex items-center justify-between group-hover:border-brand-primary transition-colors"
+                 >
+                   <span className="text-xs font-bold text-brand-primary uppercase tracking-widest">Enrolment Open</span>
+                   <ArrowRight size={18} className="text-brand-primary transition-transform group-hover:translate-x-1" />
+                 </button>
+               </div>
             </div>
           ))}
         </div>
