@@ -15,7 +15,7 @@ function createWindow() {
       contextIsolation: true,
     },
     title: "Emax Typing Software",
-    icon: path.join(__dirname, '../public/icons/icon-512x512.png'),
+    icon: path.join(__dirname, '../public/icon-512x512.png'),
     autoHideMenuBar: true
   });
 
