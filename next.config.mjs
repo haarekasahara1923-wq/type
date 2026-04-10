@@ -50,6 +50,7 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   // Your existing nextConfig here
 };
 

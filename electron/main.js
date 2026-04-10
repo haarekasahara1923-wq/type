@@ -1,10 +1,21 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
-const isDev = require('electron-is-dev');
+const { createServer } = require('http');
+const { parse } = require('url');
+const next = require('next');
+
+const dev = !app.isPackaged;
+
+if (!dev) {
+  // In production, point Prisma to the unpacked database file
+  const dbPath = path.join(app.getAppPath().replace('app.asar', 'app.asar.unpacked'), 'prisma/dev.db');
+  process.env.DATABASE_URL = `file:${dbPath}`;
+}
+
+const nextApp = next({ dev, dir: path.join(__dirname, '../') });
+const handle = nextApp.getRequestHandler();
 
 let mainWindow;
-let nextProcess;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -19,14 +30,10 @@ function createWindow() {
     autoHideMenuBar: true
   });
 
-  const url = isDev ? 'http://localhost:3000' : 'http://localhost:3000';
+  mainWindow.loadURL('http://localhost:3000');
 
-  if (isDev) {
-    mainWindow.loadURL(url);
+  if (dev) {
     mainWindow.webContents.openDevTools();
-  } else {
-    // In production, we assume next start is already running or we start it
-    mainWindow.loadURL(url);
   }
 
   mainWindow.on('closed', () => {
@@ -35,31 +42,20 @@ function createWindow() {
 }
 
 app.on('ready', () => {
-  // Start Next.js server
-  const nextCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  const nextArgs = isDev ? ['run', 'dev'] : ['run', 'start'];
-  
-  nextProcess = spawn(nextCmd, nextArgs, {
-    cwd: path.join(__dirname, '../'),
-    env: { ...process.env, NODE_ENV: isDev ? 'development' : 'production' },
-    shell: true
-  });
-
-  nextProcess.stdout.on('data', (data) => {
-    console.log(`Next.js: ${data}`);
-    if (data.toString().includes('ready') || data.toString().includes('started server')) {
-       if (!mainWindow) createWindow();
-    }
-  });
-
-  nextProcess.stderr.on('data', (data) => {
-    console.error(`Next.js Error: ${data}`);
+  nextApp.prepare().then(() => {
+    createServer((req, res) => {
+      const parsedUrl = parse(req.url, true);
+      handle(req, res, parsedUrl);
+    }).listen(3000, (err) => {
+      if (err) throw err;
+      console.log('> Ready on http://localhost:3000');
+      createWindow();
+    });
   });
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    if (nextProcess) nextProcess.kill();
     app.quit();
   }
 });
@@ -69,3 +65,4 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
