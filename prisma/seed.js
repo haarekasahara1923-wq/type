@@ -23,6 +23,7 @@ async function main() {
     update: {},
     create: {
       name: 'John Doe',
+      contact: '9876543210',
       email: 'student@emax.com',
       password: 'password123', // Use bcrypt.hash in real seed
       instituteId: institute.id,
@@ -67,7 +68,6 @@ async function main() {
   // Batch insert
   await prisma.typingParagraph.createMany({
     data: data,
-    skipDuplicates: true,
   });
 
   console.log('Seed completed successfully!');

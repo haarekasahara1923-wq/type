@@ -2,12 +2,16 @@
   "name": "typing-app",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "npm run build && electron-builder --win"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -37,11 +41,34 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^9.2.1",
+    "electron": "^41.2.0",
+    "electron-is-dev": "^3.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "prisma": "^6.4.1",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.4"
+  },
+  "build": {
+    "appId": "com.emax.typing",
+    "productName": "Emax Typing",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/icon-512x512.png"
+    },
+    "files": [
+      "**/*",
+      "!dist",
+      "!node_modules",
+      "node_modules/**/*"
+    ]
   }
 }

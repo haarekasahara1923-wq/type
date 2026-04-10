@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Institute {
@@ -39,7 +38,7 @@ model TypingParagraph {
   id        String   @id @default(cuid())
   language  String   // "Hindi" or "English"
   difficulty String  // "Beginner", "Intermediate", "Advanced"
-  content   String   @db.Text
+  content   String
   createdAt DateTime @default(now())
 }
 
