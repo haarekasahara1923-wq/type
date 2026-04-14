@@ -39,12 +39,6 @@ function LoginForm() {
       return;
     }
 
-    if (!navigator.onLine) {
-      setError("Aap offline hain. Pehli baar login karne ke liye internet zaroori hai.");
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await signIn("credentials", {
         redirect: false,

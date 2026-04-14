@@ -30,12 +30,6 @@ export default function SignupPage() {
       return;
     }
 
-    if (!navigator.onLine) {
-      setError("Aap offline hain. Naya account banane ke liye internet zaroori hai.");
-      setLoading(false);
-      return;
-    }
-
 
     if (formData.contact.replace(/\D/g, '').length < 10) {
       setError("10-digit sahi Mobile Number daalo.");

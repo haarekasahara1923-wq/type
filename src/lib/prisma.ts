@@ -1,7 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  // Log which DB is being used — helps debug Electron packaging issues
+  if (process.env.DATABASE_URL) {
+    console.log("[Prisma] DATABASE_URL =", process.env.DATABASE_URL);
+  } else {
+    console.warn("[Prisma] DATABASE_URL is NOT set! Using default prisma path.");
+  }
+
+  return new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  });
 };
 
 declare global {

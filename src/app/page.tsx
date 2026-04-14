@@ -147,7 +147,7 @@ export default function Home() {
               <div className="relative aspect-[4/3] rounded-[40px] overflow-hidden border-8 border-white shadow-2xl">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" 
+                  src="/assets/images/hero-students.jpg" 
                   alt="Indian girl students working on computers"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -185,15 +185,15 @@ export default function Home() {
         {/* Courses Grid from Ad Creative */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mb-24">
           {[
-            { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop" },
-            { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop" },
-            { title: "Tally Prime with GST", desc: "Master professional accounting, inventory management, and GST filing from scratch.", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop" },
-            { title: "CPCT Preparation", desc: "Special batches for MP CPCT exam with focus on typing speed and theory accuracy.", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=800&auto=format&fit=crop" },
-            { title: "Job Oriented AI Courses", desc: "Stay ahead with Generative AI tools like ChatGPT, Midjourney for workplace productivity.", image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop" },
-            { title: "ITI Training", desc: "Technical vocational training for all trades with practical focus on employability.", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop" },
-            { title: "Digital Marketing", desc: "Join our comprehensive course on SEO, Content Marketing, and Online Strategy.", image: "https://images.unsplash.com/photo-1557838923-2985c318be48?q=80&w=800&auto=format&fit=crop" },
-            { title: "Academic Degrees", desc: "Admission guidance for BBA, BCA, BTech, B.Com, MBA & MTech programs.", image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=800&auto=format&fit=crop" },
-            { title: "Medical & Nursing", desc: "Enroll in DPharma, BPharma, D.Ed and other high-demand medical diplomas.", image: "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=800&auto=format&fit=crop" },
+            { title: "Social Media Marketing", desc: "Expert training in Facebook, Instagram & Google Ads to boost any business online.", image: "/assets/images/social-media.jpg" },
+            { title: "DCA / PGDCA", desc: "Get university-recognized diplomas in computer applications for govt & private jobs.", image: "/assets/images/dca-pgdca.jpg" },
+            { title: "Tally Prime with GST", desc: "Master professional accounting, inventory management, and GST filing from scratch.", image: "/assets/images/tally.jpg" },
+            { title: "CPCT Preparation", desc: "Special batches for MP CPCT exam with focus on typing speed and theory accuracy.", image: "/assets/images/cpct.jpg" },
+            { title: "Job Oriented AI Courses", desc: "Stay ahead with Generative AI tools like ChatGPT, Midjourney for workplace productivity.", image: "/assets/images/ai-courses.jpg" },
+            { title: "ITI Training", desc: "Technical vocational training for all trades with practical focus on employability.", image: "/assets/images/iti.jpg" },
+            { title: "Digital Marketing", desc: "Join our comprehensive course on SEO, Content Marketing, and Online Strategy.", image: "/assets/images/digital-marketing.jpg" },
+            { title: "Academic Degrees", desc: "Admission guidance for BBA, BCA, BTech, B.Com, MBA & MTech programs.", image: "/assets/images/academic.jpg" },
+            { title: "Medical & Nursing", desc: "Enroll in DPharma, BPharma, D.Ed and other high-demand medical diplomas.", image: "/assets/images/medical.jpg" },
           ].map((course, idx) => (
             <div key={idx} className="bg-white border border-zinc-200 rounded-[32px] overflow-hidden hover:border-brand-primary shadow-sm hover:shadow-2xl transition-all duration-300 group flex flex-col">
                <div className="h-48 overflow-hidden relative">
@@ -230,7 +230,7 @@ export default function Home() {
                  alt="Girraj Sharma Sir"
                  className="w-full h-full object-cover object-top"
                  onError={(e) => {
-                   (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Girraj+Sharma&background=000&color=fff&size=512";
+                  (e.target as HTMLImageElement).src = "/assets/images/avatar-fallback.png";
                  }}
                />
                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
@@ -308,7 +308,7 @@ export default function Home() {
 
       {/* SEO Section / Why Choose Us */}
       <section className="bg-zinc-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/assets/images/carbon-fibre.png')] opacity-20 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">

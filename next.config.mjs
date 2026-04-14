@@ -51,7 +51,9 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  // Your existing nextConfig here
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default withPWA(nextConfig);

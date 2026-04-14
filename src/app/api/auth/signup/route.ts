@@ -63,9 +63,20 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
+    // Log full error with stack for debugging
     console.error('Registration Error:', error);
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+    }
+
+    // In development, surface the real error message
+    const isDev = process.env.NODE_ENV === 'development';
+    const errorMsg = isDev && error instanceof Error
+      ? `DB Error: ${error.message}`
+      : 'Registration mein kuch problem aai. Dobara try karein.';
+
     return NextResponse.json(
-      { message: 'Registration mein kuch problem aai. Dobara try karein.' },
+      { message: errorMsg },
       { status: 500 }
     );
   }
