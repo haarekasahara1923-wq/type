@@ -27,7 +27,7 @@ try {
 } catch (error) {
   console.error("[Prisma] FATAL ERROR during initialization:", error);
   // We don't throw here to allow the module to load, but we'll return a proxy or handle it in the routes
-  prismaInstance = null as any;
+  prismaInstance = null as unknown as PrismaClient;
 }
 
 const prisma = prismaInstance;

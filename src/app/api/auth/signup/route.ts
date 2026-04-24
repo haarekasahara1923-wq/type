@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     let body;
     try {
       body = await request.json();
-    } catch (e) {
+    } catch {
       return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
     }
 
@@ -64,12 +64,14 @@ export async function POST(request: Request) {
         { message: 'Registration successful', userId: newUser.id },
         { status: 201 }
       );
-    } catch (dbError: any) {
-      console.error('Signup Database Error:', dbError);
+    } catch (dbError: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = dbError as any;
+      console.error('Signup Database Error:', error);
       
       // Handle Prisma Unique Constraint Errors
-      if (dbError.code === 'P2002') {
-        const target = dbError.meta?.target || [];
+      if (error.code === 'P2002') {
+        const target = error.meta?.target || [];
         if (Array.isArray(target) && target.includes('email')) {
           return NextResponse.json(
             { message: 'Yeh Email pehle se register hai. Doosra email use karein ya bina email ke join karein.' },
@@ -90,8 +92,8 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ 
         message: "Database me entry nahi ho paa rahi.",
-        details: dbError.message,
-        code: dbError.code 
+        details: error.message,
+        code: error.code 
       }, { status: 500 });
     }
 
