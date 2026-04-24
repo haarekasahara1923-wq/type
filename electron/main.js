@@ -8,36 +8,66 @@ const fs = require('fs');
 const dev = !app.isPackaged;
 
 // ── Database & Engine Path Logic ──
+// ── Production Environment Setup ──
 if (!dev) {
   const appRoot = app.getAppPath().replace('app.asar', 'app.asar.unpacked');
-  
-  // 1. Move DB to UserData (AppData/Roaming) to avoid permission issues
   const userDataPath = app.getPath('userData');
   const dbDir = path.join(userDataPath, 'database');
-  if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
-  
   const dbPath = path.join(dbDir, 'dev.db');
   const templateDbPath = path.join(appRoot, 'prisma', 'dev.db');
 
-  // Copy template DB to userData if it doesn't exist yet
+  console.log('[Electron] Production Mode Detected');
+  console.log('[Electron] App Root:', appRoot);
+  console.log('[Electron] UserData Path:', userDataPath);
+
+  // 1. Database Setup
+  if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
   if (!fs.existsSync(dbPath) && fs.existsSync(templateDbPath)) {
     fs.copyFileSync(templateDbPath, dbPath);
-    console.log('[Electron] Database copied to userData:', dbPath);
+    console.log('[Electron] Database initialized at:', dbPath);
+  } else if (fs.existsSync(dbPath)) {
+    console.log('[Electron] Database already exists at:', dbPath);
+  } else {
+    console.error('[Electron] FATAL: template DB not found at', templateDbPath);
   }
 
-  process.env.DATABASE_URL = `file:${dbPath}`;
+  const normalizedDbPath = dbPath.replace(/\\/g, '/');
+  process.env.DATABASE_URL = `file:${normalizedDbPath}`;
 
-  // 2. Prisma Engine Path detection
-  const prismaClientDir = path.join(appRoot, 'node_modules', '.prisma', 'client');
-  if (fs.existsSync(prismaClientDir)) {
-    const files = fs.readdirSync(prismaClientDir);
-    const engineFile = files.find(f => f.endsWith('.dll.node') || f.endsWith('.node'));
-    if (engineFile) {
-      process.env.PRISMA_QUERY_ENGINE_LIBRARY = path.join(prismaClientDir, engineFile);
+  // 2. Prisma Engine Detection
+  // Check common locations: .prisma/client, @prisma/client, or root node_modules
+  const searchPaths = [
+    path.join(appRoot, 'node_modules', '.prisma', 'client'),
+    path.join(appRoot, 'node_modules', '@prisma', 'client'),
+    path.join(appRoot, 'node_modules', 'prisma')
+  ];
+
+  let engineFound = false;
+  for (const dir of searchPaths) {
+    if (fs.existsSync(dir)) {
+      const files = fs.readdirSync(dir);
+      // Look for query engine file (e.g., query_engine-windows.dll.node or similar)
+      const engineFile = files.find(f => 
+        (f.includes('query_engine') || f.includes('schema-engine')) && 
+        (f.endsWith('.node') || f.endsWith('.dll.node'))
+      );
+      
+      if (engineFile) {
+        const fullPath = path.resolve(path.join(dir, engineFile));
+        process.env.PRISMA_QUERY_ENGINE_LIBRARY = fullPath;
+        console.log('[Electron] Prisma Engine Found at:', fullPath);
+        engineFound = true;
+        break;
+      }
     }
   }
 
-  // 3. Essential Env Vars
+  if (!engineFound) {
+    console.error('[Electron] FATAL: Prisma query engine NOT found. DB operations will fail.');
+  }
+
+
+  // 3. NextAuth & Mode Setup
   process.env.NEXTAUTH_URL = 'http://localhost:3000';
   process.env.NEXTAUTH_URL_INTERNAL = 'http://localhost:3000';
   process.env.NODE_ENV = 'production';

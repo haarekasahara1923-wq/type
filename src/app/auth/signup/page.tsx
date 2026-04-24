@@ -49,11 +49,25 @@ export default function SignupPage() {
         }),
       });
 
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        console.error("Non-JSON response:", text);
+        throw new Error(`Server returned HTML (Status: ${res.status}). API might be missing or crashing.`);
+      }
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Registration failed");
+      if (!res.ok) {
+        let msg = data.message || "Registration failed";
+        if (data.details && res.status === 500) {
+          msg += ` (Details: ${data.details.substring(0, 100)}...)`;
+        }
+        throw new Error(msg);
+      }
 
       router.push("/auth/login?registered=true");
     } catch (err) {
+      console.error("Signup Catch Block:", err);
       setError(err instanceof Error ? err.message : "Kuch problem aayi. Dobara try karein.");
     } finally {
       setLoading(false);

@@ -3,10 +3,25 @@ import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    // 1. Check if prisma client exists
+    if (!prisma) {
+      console.error("[Signup API] Prisma client is NULL. Module loading likely failed.");
+      return NextResponse.json({ 
+        message: "Database Client Error", 
+        details: "Prisma client failed to initialize. Check engine paths." 
+      }, { status: 500 });
+    }
+
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
+    }
+
     const { name, contact, whatsapp, email } = body;
 
-    // Validate required fields — only name & mobile are required
+    // Validate required fields
     if (!name || !contact) {
       return NextResponse.json(
         { message: 'Name aur Mobile Number zaroori hai.' },
@@ -14,7 +29,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Mobile number must be 10 digits
     const cleanContact = contact.trim().replace(/\D/g, '');
     if (cleanContact.length < 10) {
       return NextResponse.json(
@@ -23,60 +37,71 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if mobile number already registered
-    const existingByContact = await prisma.student.findUnique({
-      where: { contact: cleanContact },
-    });
-    if (existingByContact) {
-      return NextResponse.json(
-        { message: 'Yeh Mobile Number pehle se register hai. Sign In karein.' },
-        { status: 400 }
-      );
-    }
-
-    // Check email uniqueness only if email is provided
-    if (email && email.trim() !== '') {
-      const existingByEmail = await prisma.student.findUnique({
-        where: { email: email.trim().toLowerCase() },
+    // Wrap DB heavy calls in their own try-catch
+    try {
+      const existingByContact = await prisma.student.findUnique({
+        where: { contact: cleanContact },
       });
-      if (existingByEmail) {
+
+      if (existingByContact) {
         return NextResponse.json(
-          { message: 'Yeh Email pehle se register hai.' },
+          { message: 'Yeh Mobile Number pehle se register hai. Sign In karein.' },
           { status: 400 }
         );
       }
+
+      const newUser = await prisma.student.create({
+        data: {
+          name: name.trim(),
+          contact: cleanContact,
+          whatsapp: whatsapp?.trim() || null,
+          email: email?.trim().toLowerCase() || null,
+          password: null,
+        },
+      });
+
+      return NextResponse.json(
+        { message: 'Registration successful', userId: newUser.id },
+        { status: 201 }
+      );
+    } catch (dbError: any) {
+      console.error('Signup Database Error:', dbError);
+      
+      // Handle Prisma Unique Constraint Errors
+      if (dbError.code === 'P2002') {
+        const target = dbError.meta?.target || [];
+        if (Array.isArray(target) && target.includes('email')) {
+          return NextResponse.json(
+            { message: 'Yeh Email pehle se register hai. Doosra email use karein ya bina email ke join karein.' },
+            { status: 400 }
+          );
+        }
+        if (Array.isArray(target) && target.includes('contact')) {
+          return NextResponse.json(
+            { message: 'Yeh Mobile Number pehle se register hai. Sign In karein.' },
+            { status: 400 }
+          );
+        }
+        return NextResponse.json(
+          { message: 'Kuch information pehle se register hai (Email/Mobile).' },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json({ 
+        message: "Database me entry nahi ho paa rahi.",
+        details: dbError.message,
+        code: dbError.code 
+      }, { status: 500 });
     }
 
-    // Create user — no password needed
-    const newUser = await prisma.student.create({
-      data: {
-        name: name.trim(),
-        contact: cleanContact,
-        whatsapp: whatsapp?.trim() || null,
-        email: email?.trim().toLowerCase() || null,
-        password: null,
-      },
-    });
-
-    return NextResponse.json(
-      { message: 'Registration successful', userId: newUser.id },
-      { status: 201 }
-    );
   } catch (error) {
-    // Log full error with stack for debugging
-    console.error('Registration Error:', error);
-    if (error instanceof Error) {
-      console.error('Error stack:', error.stack);
-    }
-
-    // In development, surface the real error message
-    const isDev = process.env.NODE_ENV === 'development';
-    const errorMsg = isDev && error instanceof Error
-      ? `DB Error: ${error.message}`
-      : 'Registration mein kuch problem aai. Dobara try karein.';
-
+    console.error('Registration Critical Failure:', error);
     return NextResponse.json(
-      { message: errorMsg },
+      { 
+        message: "Server internal error occur hui.",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

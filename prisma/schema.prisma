@@ -1,8 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -11,45 +9,45 @@ datasource db {
 }
 
 model Institute {
-  id              String   @id @default(cuid())
-  name            String
-  logo            String?
-  primaryColor    String   @default("#ff6600")
-  secondaryColor  String   @default("#1a1a1a")
-  domain          String   @unique
-  students        Student[]
-  createdAt       DateTime @default(now())
+  id             String    @id @default(cuid())
+  name           String
+  logo           String?
+  primaryColor   String    @default("#ff6600")
+  secondaryColor String    @default("#1a1a1a")
+  domain         String    @unique
+  createdAt      DateTime  @default(now())
+  students       Student[]
 }
 
 model Student {
-  id          String    @id @default(cuid())
+  id          String         @id @default(cuid())
   name        String
-  contact     String    @unique   // Mobile No — used for login (required & unique)
-  whatsapp    String?             // Optional WhatsApp No
-  email       String?   @unique   // Optional email
-  password    String?             // No longer required
+  contact     String         @unique
+  whatsapp    String?
+  email       String?        @unique
+  password    String?
   instituteId String?
-  institute   Institute? @relation(fields: [instituteId], references: [id])
+  createdAt   DateTime       @default(now())
+  institute   Institute?     @relation(fields: [instituteId], references: [id])
   results     TypingResult[]
-  createdAt   DateTime  @default(now())
 }
 
 model TypingParagraph {
-  id        String   @id @default(cuid())
-  language  String   // "Hindi" or "English"
-  difficulty String  // "Beginner", "Intermediate", "Advanced"
-  content   String
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  language   String
+  difficulty String
+  content    String
+  createdAt  DateTime @default(now())
 }
 
 model TypingResult {
   id        String   @id @default(cuid())
   studentId String
-  student   Student  @relation(fields: [studentId], references: [id])
   language  String
   wpm       Float
   accuracy  Float
   errors    Int
-  duration  Int      // in seconds
+  duration  Int
   createdAt DateTime @default(now())
+  student   Student  @relation(fields: [studentId], references: [id])
 }
