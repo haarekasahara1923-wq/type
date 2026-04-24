@@ -9,10 +9,15 @@ const prismaClientSingleton = () => {
     console.warn("[Prisma] WARNING: DATABASE_URL is NOT set. Prisma might fail or use default path.");
   }
 
-  return new PrismaClient({
-    datasourceUrl: dbUrl,
+  const options: any = {
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
+  };
+
+  if (dbUrl) {
+    options.datasourceUrl = dbUrl;
+  }
+
+  return new PrismaClient(options);
 };
 
 declare global {
